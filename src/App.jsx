@@ -1,5 +1,3 @@
-import "./App.css";
-
 const App = () => {
   return <h1>LinkedIn Clone</h1>;
 };

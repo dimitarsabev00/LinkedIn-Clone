@@ -1,6 +1,6 @@
 # LinkedIn Clone
 
-### Open Project - []()
+### Open Project - [https://linkedin-clone-a.vercel.app/](https://linkedin-clone-a.vercel.app/)
 
 ## Available Scripts
 

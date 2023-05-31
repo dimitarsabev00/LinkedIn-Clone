@@ -1,5 +1,12 @@
+import { BrowserRouter as Router } from "react-router-dom";
+import { Routes } from "./components";
+
 const App = () => {
-  return <h1>LinkedIn Clone</h1>;
+  return (
+    <Router>
+      <Routes />
+    </Router>
+  );
 };
 
 export default App;

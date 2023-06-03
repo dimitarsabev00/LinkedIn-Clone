@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Header, LeftSide, RightSide } from "../../components";
+import { Header, LeftSide, Main, RightSide } from "../../components";
 
 const Home = () => {
   return (
@@ -8,7 +8,7 @@ const Home = () => {
       <Container>
         <Layout>
           <LeftSide />
-          <div>Main</div>
+          <Main />
           <RightSide />
         </Layout>
       </Container>

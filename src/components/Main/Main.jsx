@@ -1,10 +1,12 @@
 import styled from "styled-components";
+import Post from "../Post";
 import ShareBox from "../ShareBox";
 
 const Main = () => {
   return (
     <Container>
       <ShareBox />
+      <Post />
     </Container>
   );
 };

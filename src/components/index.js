@@ -4,3 +4,4 @@ export { default as LeftSide } from "./LeftSide";
 export { default as RightSide } from "./RightSide";
 export { default as Main } from "./Main";
 export { default as ShareBox } from "./ShareBox";
+export { default as Post } from "./Post";

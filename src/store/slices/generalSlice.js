@@ -1,7 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
+import {
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithPopup,
+} from "firebase/auth";
+import { auth } from "../../configs/firebase";
 
 const initialState = {
-  testState: "is this testState",
+  user: null,
 };
 
 export const generalSlice = createSlice({
@@ -15,5 +21,16 @@ export const generalSlice = createSlice({
 export const { setGeneralFields } = generalSlice.actions;
 
 // here write actions
+
+export const loginUserWithGoogle = () => async (dispatch) => {
+  try {
+    const provider = new GoogleAuthProvider();
+    const { user } = await signInWithPopup(auth, provider);
+    dispatch(setGeneralFields({ user }));
+    window.location.href = "/feed";
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export default generalSlice.reducer;

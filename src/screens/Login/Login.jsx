@@ -2,7 +2,11 @@ import styled from "styled-components";
 import LoginLogo from "../../assets/icons/login-logo.svg";
 import LoginWithGoogleLogo from "../../assets/icons/google.svg";
 import LoginIllustration from "../../assets/images/login-illustration.svg";
+import { useDispatch } from "react-redux";
+import { loginUserWithGoogle } from "../../store/slices/generalSlice";
 const Login = () => {
+  const dispatch = useDispatch();
+
   return (
     <Container>
       <Nav>
@@ -20,7 +24,11 @@ const Login = () => {
           <img src={LoginIllustration} alt="" />
         </Hero>
         <Form>
-          <Google>
+          <Google
+            onClick={() => {
+              dispatch(loginUserWithGoogle());
+            }}
+          >
             <img src={LoginWithGoogleLogo} alt="" />
             Sign in with Google
           </Google>

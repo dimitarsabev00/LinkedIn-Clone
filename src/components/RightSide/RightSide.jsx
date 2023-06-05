@@ -2,6 +2,7 @@ import styled from "styled-components";
 import FeedInfoIcon from "../../assets/icons/feed-info-icon.svg";
 import UserDefaultAvatar from "../../assets/icons/user-default-avatar.svg";
 import ArrowRightIcon from "../../assets/icons/arrow-right-icon.svg";
+import BannerForJobLinkedIn from "../../assets/images/banner_for_job_LinkedIn.jpeg";
 
 const RightSide = () => {
   return (
@@ -46,6 +47,9 @@ const RightSide = () => {
           <img src={ArrowRightIcon} alt="" />
         </Recommendation>
       </FollowCard>
+      <BannerCard>
+        <img src={BannerForJobLinkedIn} alt="" />
+      </BannerCard>
     </Container>
   );
 };
@@ -126,5 +130,10 @@ const Recommendation = styled.a`
   font-size: 14px;
   gap: 0.3rem;
 `;
-
+const BannerCard = styled(FollowCard)`
+  img {
+    width: 100%;
+    height: 100%;
+  }
+`;
 export default RightSide;

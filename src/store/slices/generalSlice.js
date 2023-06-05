@@ -32,5 +32,12 @@ export const loginUserWithGoogle = () => async (dispatch) => {
     console.log(error);
   }
 };
+export const checkUser = () => async (dispatch) => {
+  onAuthStateChanged(auth, async (currUser) => {
+    if (currUser) {
+      dispatch(setGeneralFields({ user: currUser }));
+    }
+  });
+};
 
 export default generalSlice.reducer;

@@ -1,10 +1,15 @@
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Routes } from "./components";
+import { checkUser } from "./store/slices/generalSlice";
 
 const App = () => {
-  const testState = useSelector(({ generalSlice }) => generalSlice.testState);
-  console.log(testState);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(checkUser());
+  }, []);
+
   return (
     <Router>
       <Routes />

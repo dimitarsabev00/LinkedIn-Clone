@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import styled from "styled-components";
 import CloseIcon from "@mui/icons-material/Close";
 import UserDefaultAvatar from "../../assets/icons/user-default-avatar.svg";

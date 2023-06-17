@@ -4,11 +4,14 @@ import AddImageIcon from "@mui/icons-material/Image";
 import AddVideoIcon from "@mui/icons-material/VideoLibrary";
 import AddEventIcon from "@mui/icons-material/EventNote";
 import AddArticleIcon from "@mui/icons-material/Notes";
+import { useSelector } from "react-redux";
 const ShareBox = () => {
+  const { photoURL } = useSelector(({ generalSlice }) => generalSlice.user);
+
   return (
     <ShareBoxWrapper>
       <div>
-        <img src={UserDefaultAvatar} alt="" />
+        <img src={photoURL || UserDefaultAvatar} alt="" />
         <button>Start a post</button>
       </div>
       <div>

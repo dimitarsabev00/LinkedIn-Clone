@@ -10,8 +10,11 @@ import UserIcon from "../../assets/icons/user-default-avatar.svg";
 import ArrowDownIcon from "../../assets/icons/arrow-down-icon.svg";
 import NavWorkIcon from "../../assets/icons/nav-work.svg";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 const Header = () => {
   const navigate = useNavigate();
+  const { photoURL } = useSelector(({ generalSlice }) => generalSlice.user);
+
   return (
     <Container>
       <Content>
@@ -69,7 +72,11 @@ const Header = () => {
 
             <User>
               <a>
-                <img src={UserIcon} alt="" />
+                {photoURL ? (
+                  <img src={photoURL} alt="" />
+                ) : (
+                  <img src={UserIcon} alt="" />
+                )}
                 <span>
                   <span>Me</span>
                   <img src={ArrowDownIcon} alt="" />

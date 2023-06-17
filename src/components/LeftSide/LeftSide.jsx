@@ -25,7 +25,7 @@ const LeftSide = () => {
                 })`,
               }}
             />
-            <Link>Welcome, there!</Link>
+            <Link>Welcome, {currentUser?.displayName || "there"}!</Link>
           </a>
           <a>
             <AddPhotoText>Add a photo</AddPhotoText>

@@ -4,7 +4,10 @@ import UserDefaultAvatar from "../../assets/icons/user-default-avatar.svg";
 import AddUserToNetworkIcon from "../../assets/icons/plus-icon.svg";
 import MyItemsIcon from "../../assets/icons/item-icon.svg";
 import AddEventsIcon from "../../assets/icons/plus-icon.svg";
+import { useSelector } from "react-redux";
 const LeftSide = () => {
+  const { photoURL } = useSelector(({ generalSlice }) => generalSlice.user);
+
   return (
     <Container>
       <ArtCard>
@@ -17,7 +20,7 @@ const LeftSide = () => {
           <a>
             <Photo
               style={{
-                backgroundImage: `url(${UserDefaultAvatar})`,
+                backgroundImage: `url(${photoURL || UserDefaultAvatar})`,
               }}
             />
             <Link>Welcome, there!</Link>

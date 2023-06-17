@@ -10,10 +10,12 @@ import UserIcon from "../../assets/icons/user-default-avatar.svg";
 import ArrowDownIcon from "../../assets/icons/arrow-down-icon.svg";
 import NavWorkIcon from "../../assets/icons/nav-work.svg";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../store/slices/generalSlice";
 const Header = () => {
   const navigate = useNavigate();
-  const { photoURL } = useSelector(({ generalSlice }) => generalSlice.user);
+  const dispatch = useDispatch();
+  const currentUser = useSelector(({ generalSlice }) => generalSlice.user);
 
   return (
     <Container>
@@ -72,8 +74,8 @@ const Header = () => {
 
             <User>
               <a>
-                {photoURL ? (
-                  <img src={photoURL} alt="" />
+                {currentUser?.photoURL ? (
+                  <img src={currentUser?.photoURL} alt="" />
                 ) : (
                   <img src={UserIcon} alt="" />
                 )}
@@ -84,7 +86,13 @@ const Header = () => {
               </a>
 
               <SignOut>
-                <a>Sign Out</a>
+                <a
+                  onClick={() => {
+                    dispatch(logout());
+                  }}
+                >
+                  Sign Out
+                </a>
               </SignOut>
             </User>
 
@@ -248,6 +256,7 @@ const SignOut = styled.div`
   transition-duration: 167ms;
   text-align: center;
   display: none;
+  cursor: pointer;
 `;
 
 const User = styled(NavList)`

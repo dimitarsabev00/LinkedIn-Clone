@@ -3,6 +3,7 @@ import {
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
+  signOut,
 } from "firebase/auth";
 import { auth } from "../../configs/firebase";
 
@@ -39,5 +40,10 @@ export const checkUser = () => async (dispatch) => {
     }
   });
 };
+export const logout = () => async (dispatch) => {
+  await signOut(auth);
+  dispatch(setGeneralFields({ user: null }));
 
+  window.location.href = "/login";
+};
 export default generalSlice.reducer;

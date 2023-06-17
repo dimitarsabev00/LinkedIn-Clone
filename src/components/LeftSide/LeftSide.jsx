@@ -6,7 +6,7 @@ import MyItemsIcon from "../../assets/icons/item-icon.svg";
 import AddEventsIcon from "../../assets/icons/plus-icon.svg";
 import { useSelector } from "react-redux";
 const LeftSide = () => {
-  const { photoURL } = useSelector(({ generalSlice }) => generalSlice.user);
+  const currentUser = useSelector(({ generalSlice }) => generalSlice.user);
 
   return (
     <Container>
@@ -20,7 +20,9 @@ const LeftSide = () => {
           <a>
             <Photo
               style={{
-                backgroundImage: `url(${photoURL || UserDefaultAvatar})`,
+                backgroundImage: `url(${
+                  currentUser?.photoURL || UserDefaultAvatar
+                })`,
               }}
             />
             <Link>Welcome, there!</Link>

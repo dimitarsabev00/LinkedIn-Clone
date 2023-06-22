@@ -7,14 +7,17 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import CommentIcon from "@mui/icons-material/Comment";
 import { useState } from "react";
 import ReactPlayer from "react-player";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Timestamp } from "firebase/firestore";
+import { createPost } from "../../store/slices/generalSlice";
+
 const PostModal = ({ showModal, handleClick }) => {
-  const [editorText, setEditorText] = useState("");
-  const [shareImage, setShareImage] = useState("");
+  const [description, setDescription] = useState("");
+  const [image, setImage] = useState("");
   const [videoLink, setVideoLink] = useState("");
   const [assetArea, setAssetArea] = useState("");
   const currentUser = useSelector(({ generalSlice }) => generalSlice.user);
-
+  const dispatch = useDispatch();
   const handleChange = (e) => {
     const image = e.target.files[0];
 
@@ -22,17 +25,35 @@ const PostModal = ({ showModal, handleClick }) => {
       alert(`not a image, the file  is a ${typeof image}`);
       return;
     }
-    setShareImage(image);
+    setImage(image);
   };
 
   const switchAssetArea = (area) => {
-    setShareImage("");
+    setImage("");
     setVideoLink("");
     setAssetArea(area);
   };
+  const createPostInModal = (e) => {
+    e.preventDefault();
+    if (e.target !== e.currentTarget) {
+      return;
+    }
+    dispatch(
+      createPost({
+        payload: {
+          image: image,
+          video: videoLink,
+          user: currentUser,
+          description: description,
+          timestamp: Timestamp.now(),
+        },
+      })
+    );
+    reset(e);
+  };
   const reset = (e) => {
-    setEditorText("");
-    setShareImage("");
+    setDescription("");
+    setImage("");
     setVideoLink("");
     setAssetArea("");
 
@@ -56,9 +77,9 @@ const PostModal = ({ showModal, handleClick }) => {
               </UserInfo>
               <Editor>
                 <textarea
-                  value={editorText}
+                  value={description}
                   onChange={(e) => {
-                    setEditorText(e.target.value);
+                    setDescription(e.target.value);
                   }}
                   placeholder="What do you want to talk about?"
                   autoFocus
@@ -76,9 +97,7 @@ const PostModal = ({ showModal, handleClick }) => {
                     <p>
                       <label htmlFor="file">Select an image to share</label>
                     </p>
-                    {shareImage && (
-                      <img src={URL.createObjectURL(shareImage)} />
-                    )}
+                    {image && <img src={URL.createObjectURL(image)} />}
                   </UploadImage>
                 ) : (
                   assetArea === "media" && (
@@ -112,7 +131,14 @@ const PostModal = ({ showModal, handleClick }) => {
                   Anyone
                 </AssetButton>
               </ShareComment>
-              <PostButton disabled={!editorText}>Post</PostButton>
+              <PostButton
+                disabled={!description}
+                onClick={(e) => {
+                  createPostInModal(e);
+                }}
+              >
+                Post
+              </PostButton>
             </ShareCreation>
           </Content>
         </Container>

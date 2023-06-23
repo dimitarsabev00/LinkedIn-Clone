@@ -7,9 +7,16 @@ import {
 } from "firebase/auth";
 import { auth, db, storage } from "../../configs/firebase";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
-import { collection, addDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  query,
+  orderBy,
+} from "firebase/firestore";
 const initialState = {
   user: null,
+  posts: [],
 };
 
 export const generalSlice = createSlice({
@@ -67,7 +74,7 @@ export const createPost =
           (error) => console.log(error.code),
           async () => {
             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            await addDoc(collection(db, "articles"), {
+            await addDoc(collection(db, "posts"), {
               author: {
                 email: payload?.user?.email,
                 fullName: payload?.user?.displayName,
@@ -82,7 +89,7 @@ export const createPost =
           }
         );
       } else if (payload?.video !== "") {
-        await addDoc(collection(db, "articles"), {
+        await addDoc(collection(db, "posts"), {
           author: {
             email: payload?.user?.email,
             fullName: payload?.user?.displayName,
@@ -95,7 +102,7 @@ export const createPost =
           description: payload?.description,
         });
       } else {
-        await addDoc(collection(db, "articles"), {
+        await addDoc(collection(db, "posts"), {
           author: {
             email: payload?.user?.email,
             fullName: payload?.user?.displayName,
@@ -112,4 +119,20 @@ export const createPost =
       console.log(error);
     }
   };
+export const getPosts = () => async (dispatch) => {
+  try {
+    const postsCollectionRef = collection(db, "posts");
+    const postsQuery = query(
+      postsCollectionRef,
+      orderBy("author.createdAt", "desc")
+    );
+
+    onSnapshot(postsQuery, (snapshot) => {
+      const payload = snapshot.docs.map((doc) => doc.data());
+      dispatch(setGeneralFields({ posts: payload }));
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 export default generalSlice.reducer;

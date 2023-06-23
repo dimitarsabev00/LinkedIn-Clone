@@ -1,33 +1,35 @@
+/* eslint-disable react/prop-types */
 import styled from "styled-components";
-import UserDefaultAvatar from "../../assets/icons/user-default-avatar.svg";
+// import UserDefaultAvatar from "../../assets/icons/user-default-avatar.svg";
 import ThreeDotsIcon from "@mui/icons-material/MoreHoriz";
 import LikeIcon from "@mui/icons-material/ThumbUp";
 import CommentIcon from "@mui/icons-material/Comment";
 import ShareIcon from "@mui/icons-material/Share";
 import SendIcon from "@mui/icons-material/Send";
 import LikeReactionIcon from "@mui/icons-material/Recommend";
-const Post = () => {
+import ReactPlayer from "react-player";
+const Post = ({ post }) => {
   return (
     <PostWrapper>
       <AuthorDetails>
         <a href="">
-          <img src={UserDefaultAvatar} alt="" />
+          <img src={post?.author?.avatar} alt="" />
           <div>
-            <span>Title</span>
-            <span>Info</span>
-            <span>Date</span>
+            <span>{post?.author?.fullName}</span>
+            <span>{post?.author?.createdAt.toDate().toLocaleDateString()}</span>
           </div>
         </a>
         <button>
           <ThreeDotsIcon />
         </button>
       </AuthorDetails>
-      <Description>Description</Description>
+      <Description>{post?.description}</Description>
       <Image>
-        <img
-          src="https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2022/02/random_glucose_GettyImages545782382_Thumb-732x549.jpg"
-          alt=""
-        />
+        {post?.video ? (
+          <ReactPlayer width={"100%"} url={post?.video} />
+        ) : (
+          <>{post?.sharedImage && <img src={post?.sharedImage} alt="" />}</>
+        )}
       </Image>
       <PostDetails>
         <li>

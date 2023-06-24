@@ -127,6 +127,7 @@ export const createPost =
             });
           }
         );
+        toast.success("Post has been added successfully!");
       } else if (payload?.video !== "") {
         await addDoc(collection(db, "posts"), {
           author: {
@@ -140,6 +141,7 @@ export const createPost =
           comments: 0,
           description: payload?.description,
         });
+        toast.success("Post has been added successfully!");
       } else {
         await addDoc(collection(db, "posts"), {
           author: {
@@ -153,6 +155,7 @@ export const createPost =
           comments: 0,
           description: payload?.description,
         });
+        toast.success("Post has been added successfully!");
       }
     } catch (error) {
       console.log(error);

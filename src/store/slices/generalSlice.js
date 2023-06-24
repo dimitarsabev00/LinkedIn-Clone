@@ -16,12 +16,12 @@ import {
   query,
   orderBy,
 } from "firebase/firestore";
+import uuid from "react-uuid";
 import { toast } from "react-toastify";
 const initialState = {
   user: null,
   posts: [],
 };
-
 export const generalSlice = createSlice({
   name: "generalSlice",
   initialState,
@@ -70,6 +70,14 @@ export const registerUserWithEmailAndPassword =
         payload?.email,
         payload?.password
       );
+      await addDoc(collection(db, "users"), {
+        userID: uuid(),
+        name: payload?.name,
+        email: payload?.email,
+        avatar:
+          "https://static.vecteezy.com/system/resources/previews/001/840/618/original/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-free-vector.jpg",
+      });
+
       dispatch(setGeneralFields({ user }));
       if (onSuccess) {
         onSuccess();

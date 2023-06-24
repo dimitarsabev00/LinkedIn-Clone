@@ -59,6 +59,7 @@ const Register = () => {
                 payload: {
                   email,
                   password,
+                  name,
                 },
                 onSuccess: () => {
                   navigate("/feed");

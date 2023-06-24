@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
+  createUserWithEmailAndPassword,
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -58,6 +59,24 @@ export const loginUserWithEmailAndPassword =
     } catch (err) {
       console.log(err);
       toast.error("Please Check your Credentials");
+    }
+  };
+export const registerUserWithEmailAndPassword =
+  ({ payload, onSuccess }) =>
+  async (dispatch) => {
+    try {
+      let { user } = await createUserWithEmailAndPassword(
+        auth,
+        payload?.email,
+        payload?.password
+      );
+      dispatch(setGeneralFields({ user }));
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Cannot Created your Account!");
     }
   };
 export const checkUser = () => async (dispatch) => {

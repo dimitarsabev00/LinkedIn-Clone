@@ -17,19 +17,15 @@ const LeftSide = () => {
               backgroundImage: `url(${UserCardDefaultBackgroundImage})`,
             }}
           />
-          <a>
-            <Photo
-              style={{
-                backgroundImage: `url(${
-                  currentUser?.photoURL || UserDefaultAvatar
-                })`,
-              }}
-            />
-            <Link>Welcome, {currentUser?.displayName || "there"}!</Link>
-          </a>
-          <a>
-            <AddPhotoText>Add a photo</AddPhotoText>
-          </a>
+          <Photo
+            style={{
+              backgroundImage: `url(${
+                currentUser?.photoURL || UserDefaultAvatar
+              })`,
+            }}
+          />
+          <Link>{currentUser?.displayName}</Link>
+          <SecondTextAfterPhoto>Front End Developer</SecondTextAfterPhoto>
         </UserInfo>
         <Widget>
           <a>
@@ -124,7 +120,7 @@ const Link = styled.div`
   font-weight: 600;
 `;
 
-const AddPhotoText = styled.div`
+const SecondTextAfterPhoto = styled.div`
   color: #0a66c2;
   margin-top: 4px;
   font-size: 12px;

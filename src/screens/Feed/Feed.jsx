@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Header, LeftSide, Main, RightSide } from "../../components";
 
-const Home = () => {
+const Feed = () => {
   return (
     <>
       <Header />
@@ -34,4 +34,4 @@ const Layout = styled.div`
     padding: 0 5px;
   }
 `;
-export default Home;
+export default Feed;

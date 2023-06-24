@@ -35,7 +35,7 @@ const ShareBox = () => {
           <img src={currentUser?.photoURL || UserDefaultAvatar} alt="" />
           <button onClick={handleClick}>Start a post</button>
         </div>
-        <div>
+        {/* <div>
           <button>
             <AddImageIcon style={{ color: "#7CBBF3" }} />
             <span>Photo</span>
@@ -52,7 +52,7 @@ const ShareBox = () => {
             <AddArticleIcon style={{ color: "#F89F88" }} />
             <span>Write Article</span>
           </button>
-        </div>
+        </div> */}
       </ShareBoxWrapper>
       <PostModal showModal={showModal} handleClick={handleClick} />
     </>
@@ -91,7 +91,7 @@ const ShareBoxWrapper = styled(CommonCard)`
     &:first-child {
       display: flex;
       align-items: center;
-      padding: 8px 16px 0px 16px;
+      margin: 0.8rem 1.6rem 0.8rem;
       img {
         width: 48px;
         border-radius: 50%;

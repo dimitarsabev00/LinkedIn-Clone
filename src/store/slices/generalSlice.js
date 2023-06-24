@@ -178,7 +178,9 @@ export const getPosts = () => async (dispatch) => {
     );
 
     onSnapshot(postsQuery, (snapshot) => {
-      const payload = snapshot.docs.map((doc) => doc.data());
+      const payload = snapshot.docs.map((doc) => {
+        return { ...doc.data(), id: doc?.id };
+      });
       dispatch(setGeneralFields({ posts: payload }));
     });
   } catch (error) {

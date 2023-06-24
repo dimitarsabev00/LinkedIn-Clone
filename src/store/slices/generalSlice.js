@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   GoogleAuthProvider,
   onAuthStateChanged,
+  signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
 } from "firebase/auth";
@@ -14,6 +15,7 @@ import {
   query,
   orderBy,
 } from "firebase/firestore";
+import { toast } from "react-toastify";
 const initialState = {
   user: null,
   posts: [],
@@ -40,6 +42,24 @@ export const loginUserWithGoogle = () => async (dispatch) => {
     console.log(error);
   }
 };
+export const loginUserWithEmailAndPassword =
+  ({ payload, onSuccess }) =>
+  async (dispatch) => {
+    try {
+      let { user } = await signInWithEmailAndPassword(
+        auth,
+        payload?.email,
+        payload?.password
+      );
+      dispatch(setGeneralFields({ user }));
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Please Check your Credentials");
+    }
+  };
 export const checkUser = () => async (dispatch) => {
   onAuthStateChanged(auth, async (currUser) => {
     if (currUser) {

@@ -1,179 +1,175 @@
-import styled from "styled-components";
+/* eslint-disable no-unused-vars */
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import LoginLogo from "../../assets/icons/login-logo.svg";
-import LoginWithGoogleLogo from "../../assets/icons/google.svg";
-import LoginIllustration from "../../assets/images/login-illustration.svg";
+import styled from "styled-components";
+import { loginUserWithEmailAndPassword } from "../../store";
 import { useDispatch } from "react-redux";
-import { loginUserWithGoogle } from "../../store/slices/generalSlice";
-const Login = () => {
-  const dispatch = useDispatch();
+import { useState } from "react";
+import { toast } from "react-toastify";
 
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   return (
-    <Container>
-      <Nav>
-        <a href="/">
-          <img src={LoginLogo} alt="" />
-        </a>
-        <div>
-          <Join>Join now</Join>
-          <SignIn>Sign in</SignIn>
+    <LoginWrapper>
+      <img src={LoginLogo} width={"80px"} />
+
+      <InnerLoginWrapper>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+          }}
+        >
+          <Heading>Sign in</Heading>
+          <SubHeading>Stay updated on your professional world</SubHeading>
         </div>
-      </Nav>
-      <Section>
-        <Hero>
-          <h1>Welcome to your professional community</h1>
-          <img src={LoginIllustration} alt="" />
-        </Hero>
-        <Form>
-          <Google
-            onClick={() => {
-              dispatch(loginUserWithGoogle());
-            }}
-          >
-            <img src={LoginWithGoogleLogo} alt="" />
-            Sign in with Google
-          </Google>
-        </Form>
-      </Section>
-    </Container>
+
+        <AuthInputs>
+          <CommonInput
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+            placeholder="Email or Phone"
+            value={email}
+          />
+          <CommonInput
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+            placeholder="Password"
+            value={password}
+          />
+        </AuthInputs>
+        <LoginButton
+          onClick={() => {
+            dispatch(
+              loginUserWithEmailAndPassword({
+                payload: {
+                  email,
+                  password,
+                },
+                onSuccess: () => {
+                  navigate("/feed");
+                  toast.success("Success Login!");
+                },
+              })
+            );
+          }}
+        >
+          Sign in
+        </LoginButton>
+      </InnerLoginWrapper>
+      <HorizontalLineWithText data-content="or" />
+      <GoogleButtonContainer>
+        <p style={{ fontSize: "18px" }}>
+          New to LinkedIn?{" "}
+          <JoinNow onClick={() => navigate("/register")}>Join now</JoinNow>
+        </p>
+      </GoogleButtonContainer>
+    </LoginWrapper>
   );
 };
-
-const Container = styled.div`
-  padding: 0px;
+const LoginWrapper = styled.div`
+  background-color: white;
+  height: 100vh;
 `;
-
-const Nav = styled.nav`
-  max-width: 1128px;
-  margin: auto;
-  padding: 12px 0 16px;
+const InnerLoginWrapper = styled.div`
   display: flex;
-  align-items: center;
-  position: relative;
-  justify-content: space-between;
-  flex-wrap: nowrap;
-
-  & > a {
-    width: 135px;
-    height: 34px;
-    @media (max-width: 768px) {
-      padding: 0 5px;
-    }
-  }
-`;
-
-const Join = styled.a`
-  font-size: 16px;
-  padding: 10px 12px;
-  text-decoration: none;
-  border-radius: 4px;
-  color: rgba(0, 0, 0, 0.6);
-  margin-right: 12px;
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.08);
-    color: rgba(0, 0, 0, 0.9);
-    text-decoration: none;
-  }
-`;
-
-const SignIn = styled.a`
-  box-shadow: inset 0 0 0 1px #0a66c2;
-  color: #0a66c2;
-  border-radius: 24px;
-  transition-duration: 167ms;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 40px;
-  padding: 10px 24px;
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0);
-  &:hover {
-    background-color: rgba(112, 181, 249, 0.15);
-    color: #0a66c2;
-    text-decoration: none;
-  }
-`;
-
-const Section = styled.section`
-  display: flex;
-  align-content: start;
-  min-height: 700px;
-  padding-bottom: 138px;
-  padding-top: 40px;
-  padding: 60px 0;
-  position: relative;
-  flex-wrap: wrap;
-  width: 100%;
-  max-width: 1128px;
-  align-items: center;
-  margin: auto;
-
-  @media (max-width: 768px) {
-    margin: auto;
-    min-height: 0px;
-  }
-`;
-
-const Hero = styled.div`
-  width: 100%;
-  h1 {
-    padding-bottom: 0;
-    width: 55%;
-    font-size: 56px;
-    color: #2977c9;
-    font-weight: 200;
-    line-height: 70px;
-    @media (max-width: 768px) {
-      text-align: center;
-      font-size: 20px;
-      width: 100%;
-      line-height: 2;
-    }
-  }
-
-  img {
-    /* z-index: -1; */
-    width: 700px;
-    height: 670px;
-    position: absolute;
-    bottom: -2px;
-    right: -150px;
-    @media (max-width: 768px) {
-      top: 230px;
-      width: initial;
-      position: initial;
-      height: initial;
-    }
-  }
-`;
-
-const Form = styled.div`
-  margin-top: 100px;
-  width: 408px;
-  @media (max-width: 768px) {
-    margin-top: 20px;
-  }
-`;
-
-const Google = styled.button`
-  display: flex;
+  flex-direction: column;
   justify-content: center;
-  background-color: #fff;
   align-items: center;
-  height: 56px;
-  width: 100%;
-  border-radius: 28px;
-  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 60%),
-    inset 0 0 0 2px rgb(0 0 0 / 0%) inset 0 0 0 1px rgb(0 0 0 / 0);
-
-  vertical-align: middle;
-  z-index: 0;
-  transition-duration: 167ms;
-  font-size: 20px;
-  color: rgba(0, 0, 0, 0.6);
+`;
+const Heading = styled.h1`
+  font-size: 1.2rem;
+  line-height: 1.25;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.9);
+  padding: 0 0 4px 0;
+`;
+const SubHeading = styled.p`
+  ont-size: 1.4rem;
+  line-height: 1.42857;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.9);
+  margin-bottom: 1rem;
+`;
+const LoginButton = styled.button`
+  width: 300px;
+  height: 50px;
+  cursor: pointer;
+  background-color: #0073b1;
+  border-radius: 30px;
+  outline: none;
+  border: none;
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 18px;
+  margin-top: 20px;
   &:hover {
-    background-color: rgba(207, 207, 207, 0.25);
-    color: rgba(0, 0, 0, 0.75);
+    background-color: #004c75;
   }
 `;
+const AuthInputs = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 300px;
+`;
+const HorizontalLineWithText = styled.hr`
+  line-height: 1em;
+  position: relative;
+  outline: 0;
+  border: 0;
+  color: black;
+  text-align: center;
+  height: 1.5em;
+  opacity: 0.5;
+  &:before {
+    content: "";
+    // use the linear-gradient for the fading effect
+    // use a solid background color for a solid bar
+    background: linear-gradient(to right, transparent, #818078, transparent);
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+  }
+  &:after {
+    content: attr(data-content);
+    position: relative;
+    display: inline-block;
+    color: black;
 
+    padding: 0 0.5em;
+    line-height: 1.5em;
+    // this is really the only tricky part, you need to specify the background color of the container element...
+    color: #818078;
+    background-color: #fcfcfa;
+  }
+`;
+const GoogleButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+const JoinNow = styled.span`
+  color: #0072b1;
+  cursor: pointer;
+  font-size: 18px;
+`;
+const CommonInput = styled.input`
+  height: 20px;
+  padding: 10px;
+  background-color: white;
+  outline: none;
+  border: 1px solid #212121;
+  color: #212121;
+  border-radius: 3px;
+  font-size: 16px;
+`;
 export default Login;

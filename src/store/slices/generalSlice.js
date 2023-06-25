@@ -19,6 +19,7 @@ import {
 } from "firebase/firestore";
 import uuid from "react-uuid";
 import { toast } from "react-toastify";
+import moment from "moment";
 const initialState = {
   user: null,
   posts: [],
@@ -161,10 +162,10 @@ export const createPost =
             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
             await addDoc(collection(db, "posts"), {
               author: {
-                email: payload?.user?.email,
-                fullName: payload?.user?.displayName,
-                createdAt: payload?.timestamp,
-                avatar: payload?.user?.photoURL,
+                email: payload?.user?.[0]?.email,
+                fullName: payload?.user?.[0]?.name,
+                createdAt: moment().format("DD/MM/YYYY"),
+                avatar: payload?.user?.[0]?.avatar,
               },
               video: payload?.video,
               sharedImage: downloadURL,
@@ -177,10 +178,10 @@ export const createPost =
       } else if (payload?.video !== "") {
         await addDoc(collection(db, "posts"), {
           author: {
-            email: payload?.user?.email,
-            fullName: payload?.user?.displayName,
-            createdAt: payload?.timestamp,
-            avatar: payload?.user?.photoURL,
+            email: payload?.user?.[0]?.email,
+            fullName: payload?.user?.[0]?.name,
+            createdAt: moment().format("DD/MM/YYYY"),
+            avatar: payload?.user?.[0]?.avatar,
           },
           video: payload?.video,
           sharedImage: "",
@@ -191,10 +192,10 @@ export const createPost =
       } else {
         await addDoc(collection(db, "posts"), {
           author: {
-            email: payload?.user?.email,
-            fullName: payload?.user?.displayName,
-            createdAt: payload?.timestamp,
-            avatar: payload?.user?.photoURL,
+            email: payload?.user?.[0]?.email,
+            fullName: payload?.user?.[0]?.name,
+            createdAt: moment().format("DD/MM/YYYY"),
+            avatar: payload?.user?.[0]?.avatar,
           },
           video: payload?.video,
           sharedImage: "",

@@ -8,7 +8,6 @@ import CommentIcon from "@mui/icons-material/Comment";
 import { useState } from "react";
 import ReactPlayer from "react-player";
 import { useDispatch, useSelector } from "react-redux";
-import { Timestamp } from "firebase/firestore";
 import { createPost } from "../../store/slices/generalSlice";
 
 const PostModal = ({ showModal, handleClick }) => {
@@ -45,7 +44,6 @@ const PostModal = ({ showModal, handleClick }) => {
           video: videoLink,
           user: currentUser,
           description: description,
-          timestamp: Timestamp.now(),
         },
       })
     );

@@ -16,7 +16,7 @@ const Post = ({ post }) => {
           <img src={post?.author?.avatar} alt="" />
           <div>
             <span>{post?.author?.fullName}</span>
-            <span>{post?.author?.createdAt.toDate().toLocaleDateString()}</span>
+            <span>{post?.author?.createdAt}</span>
           </div>
         </a>
         <button>

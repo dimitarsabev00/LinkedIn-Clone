@@ -16,6 +16,8 @@ import {
   orderBy,
   doc,
   getDoc,
+  updateDoc,
+  where,
 } from "firebase/firestore";
 import uuid from "react-uuid";
 import { toast } from "react-toastify";
@@ -23,6 +25,7 @@ import moment from "moment";
 const initialState = {
   user: null,
   posts: [],
+  currentProfile: [],
 };
 export const generalSlice = createSlice({
   name: "generalSlice",
@@ -95,7 +98,6 @@ export const registerUserWithEmailAndPassword =
         payload?.password
       );
       await addDoc(collection(db, "users"), {
-        id: uuid(),
         name: payload?.name,
         email: payload?.email,
         avatar:
@@ -119,7 +121,7 @@ export const checkUser = () => async (dispatch) => {
   onSnapshot(collection(db, "users"), (snapshot) => {
     const result = snapshot.docs
       .map((doc) => {
-        return { ...doc.data() };
+        return { ...doc.data(), userID: doc?.id };
       })
       .filter((item) => {
         return item.email === currentUserEmail;
@@ -166,6 +168,7 @@ export const createPost =
                 fullName: payload?.user?.[0]?.name,
                 createdAt: moment().format("DD/MM/YYYY"),
                 avatar: payload?.user?.[0]?.avatar,
+                id: payload?.user?.[0]?.userID,
               },
               video: payload?.video,
               sharedImage: downloadURL,
@@ -182,6 +185,7 @@ export const createPost =
             fullName: payload?.user?.[0]?.name,
             createdAt: moment().format("DD/MM/YYYY"),
             avatar: payload?.user?.[0]?.avatar,
+            id: payload?.user?.[0]?.userID,
           },
           video: payload?.video,
           sharedImage: "",
@@ -196,6 +200,7 @@ export const createPost =
             fullName: payload?.user?.[0]?.name,
             createdAt: moment().format("DD/MM/YYYY"),
             avatar: payload?.user?.[0]?.avatar,
+            id: payload?.user?.[0]?.userID,
           },
           video: payload?.video,
           sharedImage: "",
@@ -226,5 +231,47 @@ export const getPosts = () => async (dispatch) => {
     console.log(error);
   }
 };
+export const editProfile =
+  ({ payload, userID, onSuccess }) =>
+  async () => {
+    try {
+      let userRef = collection(db, "users");
+
+      let userToEdit = doc(userRef, userID);
+
+      updateDoc(userToEdit, payload);
+      if (onSuccess) {
+        onSuccess();
+      }
+      toast.success("Profile has been updated successfully");
+    } catch (error) {
+      console.log(error);
+      toast.error("Cannot Edit Profile");
+    }
+  };
+export const getAllPostsForSingleUser =
+  ({ id }) =>
+  async (dispatch) => {
+    let postsRef = collection(db, "posts");
+    const singlePostQuery = query(postsRef, where("id", "==", id));
+    onSnapshot(singlePostQuery, (response) => {
+      const result = response.docs.map((docs) => {
+        return { ...docs.data(), id: docs.id };
+      });
+      dispatch(setGeneralFields({ posts: result }));
+    });
+  };
+export const getCurrentProfileForSingleUser =
+  ({ email }) =>
+  async (dispatch) => {
+    let usersRef = collection(db, "users");
+    const singleUserQuery = query(usersRef, where("email", "==", email));
+    onSnapshot(singleUserQuery, (response) => {
+      const result = response.docs.map((docs) => {
+        return { ...docs.data(), id: docs.id };
+      });
+      dispatch(setGeneralFields({ currentProfile: result }));
+    });
+  };
 
 export default generalSlice.reducer;

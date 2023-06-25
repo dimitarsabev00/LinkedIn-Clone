@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useLocation } from "react-router";
 import Feed from "../../screens/Feed";
 import Login from "../../screens/Login";
 import MainPage from "../../screens/MainPage";
+import Profile from "../../screens/Profile";
 import Register from "../../screens/Register";
 import { isAuthenticated } from "../../utilities/helpers";
 
@@ -50,6 +51,14 @@ const RoutesComp = () => {
         element={
           <PrivateRoute>
             <Feed />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <PrivateRoute>
+            <Profile />
           </PrivateRoute>
         }
       />

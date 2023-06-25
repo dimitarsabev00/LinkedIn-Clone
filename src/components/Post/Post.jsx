@@ -8,14 +8,27 @@ import ShareIcon from "@mui/icons-material/Share";
 import SendIcon from "@mui/icons-material/Send";
 import LikeReactionIcon from "@mui/icons-material/Recommend";
 import ReactPlayer from "react-player";
+import { useNavigate } from "react-router-dom";
 const Post = ({ post }) => {
+  const navigate = useNavigate();
   return (
     <PostWrapper>
       <AuthorDetails>
         <a href="">
           <img src={post?.author?.avatar} alt="" />
           <div>
-            <span>{post?.author?.fullName}</span>
+            <span
+              onClick={() =>
+                navigate("/profile", {
+                  state: {
+                    id: post?.author?.id,
+                    email: post?.author?.email,
+                  },
+                })
+              }
+            >
+              {post?.author?.fullName}
+            </span>
             <span>{post?.author?.createdAt}</span>
           </div>
         </a>

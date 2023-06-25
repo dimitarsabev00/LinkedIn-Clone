@@ -6,21 +6,30 @@ import NavNetworkIcon from "../../assets/icons/nav-network.svg";
 import NavJobsIcon from "../../assets/icons/nav-jobs.svg";
 import NavMessagingIcon from "../../assets/icons/nav-messaging.svg";
 import NavNotificationsIcon from "../../assets/icons/nav-notifications.svg";
-import UserIcon from "../../assets/icons/user-default-avatar.svg";
 import ArrowDownIcon from "../../assets/icons/arrow-down-icon.svg";
 import NavWorkIcon from "../../assets/icons/nav-work.svg";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../store/slices/generalSlice";
-import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { useState } from "react";
+import ProfilePopup from "../ProfilePopup";
+
 const Header = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const currentUser = useSelector(({ generalSlice }) => generalSlice.user);
-
+  const [popupVisible, setPopupVisible] = useState(false);
+  const displayPopup = () => {
+    setPopupVisible(!popupVisible);
+  };
   return (
     <Container>
       <Content>
+        {popupVisible ? (
+          <PopupPositionContainer>
+            <ProfilePopup />
+          </PopupPositionContainer>
+        ) : (
+          <></>
+        )}
         <Logo
           onClick={() => {
             navigate("/feed");
@@ -73,34 +82,16 @@ const Header = () => {
               </a>
             </NavList>
 
-            <User>
+            <User onClick={displayPopup}>
               <a>
-                {currentUser?.[0]?.avatar ? (
-                  <img src={currentUser?.[0]?.avatar} alt="" />
-                ) : (
-                  <img src={UserIcon} alt="" />
+                {currentUser?.[0]?.avatar && (
+                  <img src={currentUser?.[0]?.avatar} alt="user" />
                 )}
                 <span>
                   <span>Me</span>
                   <img src={ArrowDownIcon} alt="" />
                 </span>
               </a>
-
-              <SignOut>
-                <a
-                  onClick={() => {
-                    dispatch(
-                      logout({
-                        onSuccess: () => {
-                          toast.success("Success Logout!");
-                        },
-                      })
-                    );
-                  }}
-                >
-                  Sign Out
-                </a>
-              </SignOut>
             </User>
 
             <Work>
@@ -136,6 +127,7 @@ const Content = styled.div`
   margin: 0 auto;
   min-height: 100%;
   max-width: 1128px;
+  position: relative;
 `;
 
 const Logo = styled.div`
@@ -245,6 +237,7 @@ const NavList = styled.li`
   &:hover,
   &:active {
     a {
+      cursor: pointer;
       span {
         color: rgba(0, 0, 0, 0.9);
       }
@@ -252,26 +245,7 @@ const NavList = styled.li`
   }
 `;
 
-const SignOut = styled.div`
-  position: absolute;
-  top: 45px;
-  background: white;
-  border-radius: 0 0 5px 5px;
-  width: 100px;
-  height: 40px;
-  font-size: 16px;
-  transition-duration: 167ms;
-  text-align: center;
-  display: none;
-  cursor: pointer;
-`;
-
 const User = styled(NavList)`
-  a > svg {
-    width: 24px;
-    border-radius: 50%;
-  }
-
   a > img {
     width: 24px;
     height: 24px;
@@ -282,18 +256,16 @@ const User = styled(NavList)`
     display: flex;
     align-items: center;
   }
-
-  &:hover {
-    ${SignOut} {
-      align-items: center;
-      display: flex;
-      justify-content: center;
-    }
-  }
 `;
 
 const Work = styled(User)`
   border-left: 1px solid rgba(0, 0, 0, 0.08);
+`;
+const PopupPositionContainer = styled.div`
+  position: absolute;
+  right: 10px;
+  top: 65px;
+  z-index: 99;
 `;
 
 export default Header;

@@ -5,6 +5,7 @@ import LoginIllustration from "../../assets/images/login-illustration.svg";
 import { useDispatch } from "react-redux";
 import { loginUserWithGoogle } from "../../store/slices/generalSlice";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 const MainPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -15,7 +16,13 @@ const MainPage = () => {
           <img src={LoginLogo} alt="" />
         </a>
         <div>
-          <Join>Join now</Join>
+          <Join
+            onClick={() => {
+              navigate("/register");
+            }}
+          >
+            Join now
+          </Join>
           <SignIn
             onClick={() => {
               navigate("/login");
@@ -33,7 +40,13 @@ const MainPage = () => {
         <Form>
           <Google
             onClick={() => {
-              dispatch(loginUserWithGoogle());
+              dispatch(
+                loginUserWithGoogle({
+                  onSuccess: () => {
+                    toast.success("Success Login With Google!");
+                  },
+                })
+              );
             }}
           >
             <img src={LoginWithGoogleLogo} alt="" />

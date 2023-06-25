@@ -66,7 +66,6 @@ const Register = () => {
                   name,
                 },
                 onSuccess: () => {
-                  navigate("/feed");
                   toast.success("Account Created!");
                 },
               })

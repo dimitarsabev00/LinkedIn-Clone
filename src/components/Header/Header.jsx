@@ -12,6 +12,7 @@ import NavWorkIcon from "../../assets/icons/nav-work.svg";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/slices/generalSlice";
+import { toast } from "react-toastify";
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -74,8 +75,8 @@ const Header = () => {
 
             <User>
               <a>
-                {currentUser?.photoURL ? (
-                  <img src={currentUser?.photoURL} alt="" />
+                {currentUser?.[0]?.avatar ? (
+                  <img src={currentUser?.[0]?.avatar} alt="" />
                 ) : (
                   <img src={UserIcon} alt="" />
                 )}
@@ -88,7 +89,13 @@ const Header = () => {
               <SignOut>
                 <a
                   onClick={() => {
-                    dispatch(logout());
+                    dispatch(
+                      logout({
+                        onSuccess: () => {
+                          toast.success("Success Logout!");
+                        },
+                      })
+                    );
                   }}
                 >
                   Sign Out

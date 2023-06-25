@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
-  onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -15,6 +14,8 @@ import {
   onSnapshot,
   query,
   orderBy,
+  doc,
+  getDoc,
 } from "firebase/firestore";
 import uuid from "react-uuid";
 import { toast } from "react-toastify";
@@ -33,16 +34,34 @@ export const generalSlice = createSlice({
 export const { setGeneralFields } = generalSlice.actions;
 
 // here write actions
-export const loginUserWithGoogle = () => async (dispatch) => {
-  try {
-    const provider = new GoogleAuthProvider();
-    const { user } = await signInWithPopup(auth, provider);
-    dispatch(setGeneralFields({ user }));
-    window.location.href = "/feed";
-  } catch (error) {
-    console.log(error);
-  }
-};
+export const loginUserWithGoogle =
+  ({ onSuccess }) =>
+  async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const { user } = await signInWithPopup(auth, provider);
+      window.localStorage.clear();
+      localStorage.setItem("token", user?.accessToken);
+      localStorage.setItem("currentUserEmail", user?.email);
+
+      const docSnap = await getDoc(doc(db, "users", user?.email));
+      if (docSnap.exists() === false) {
+        await addDoc(collection(db, "users"), {
+          id: uuid(),
+          name: user?.displayName,
+          email: user?.email,
+          avatar: user?.photoURL,
+        });
+      }
+      window.location.href = "/feed";
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Please Check your Credentials");
+    }
+  };
 export const loginUserWithEmailAndPassword =
   ({ payload, onSuccess }) =>
   async (dispatch) => {
@@ -52,7 +71,11 @@ export const loginUserWithEmailAndPassword =
         payload?.email,
         payload?.password
       );
-      dispatch(setGeneralFields({ user }));
+      window.localStorage.clear();
+      localStorage.setItem("token", user?.accessToken);
+      localStorage.setItem("currentUserEmail", user?.email);
+      dispatch(checkUser());
+      window.location.href = "/feed";
       if (onSuccess) {
         onSuccess();
       }
@@ -71,14 +94,17 @@ export const registerUserWithEmailAndPassword =
         payload?.password
       );
       await addDoc(collection(db, "users"), {
-        userID: uuid(),
+        id: uuid(),
         name: payload?.name,
         email: payload?.email,
         avatar:
           "https://static.vecteezy.com/system/resources/previews/001/840/618/original/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-free-vector.jpg",
       });
-
-      dispatch(setGeneralFields({ user }));
+      window.localStorage.clear();
+      localStorage.setItem("token", user?.accessToken);
+      localStorage.setItem("currentUserEmail", user?.email);
+      dispatch(checkUser());
+      window.location.href = "/feed";
       if (onSuccess) {
         onSuccess();
       }
@@ -88,18 +114,30 @@ export const registerUserWithEmailAndPassword =
     }
   };
 export const checkUser = () => async (dispatch) => {
-  onAuthStateChanged(auth, async (currUser) => {
-    if (currUser) {
-      dispatch(setGeneralFields({ user: currUser }));
-    }
+  const currentUserEmail = localStorage.getItem("currentUserEmail");
+  onSnapshot(collection(db, "users"), (snapshot) => {
+    const result = snapshot.docs
+      .map((doc) => {
+        return { ...doc.data() };
+      })
+      .filter((item) => {
+        return item.email === currentUserEmail;
+      });
+    dispatch(setGeneralFields({ user: result }));
   });
 };
-export const logout = () => async (dispatch) => {
-  await signOut(auth);
-  dispatch(setGeneralFields({ user: null }));
 
-  window.location.href = "/login";
-};
+export const logout =
+  ({ onSuccess }) =>
+  async (dispatch) => {
+    await signOut(auth);
+    window.localStorage.clear();
+    dispatch(setGeneralFields({ user: null }));
+    window.location.href = "/";
+    if (onSuccess) {
+      onSuccess();
+    }
+  };
 export const createPost =
   ({ payload }) =>
   async () => {
@@ -187,4 +225,5 @@ export const getPosts = () => async (dispatch) => {
     console.log(error);
   }
 };
+
 export default generalSlice.reducer;

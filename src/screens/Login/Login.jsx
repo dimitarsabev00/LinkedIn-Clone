@@ -59,7 +59,6 @@ const Login = () => {
                   password,
                 },
                 onSuccess: () => {
-                  navigate("/feed");
                   toast.success("Success Login!");
                 },
               })

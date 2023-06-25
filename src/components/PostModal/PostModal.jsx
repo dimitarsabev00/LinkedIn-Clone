@@ -72,8 +72,11 @@ const PostModal = ({ showModal, handleClick }) => {
             </Header>
             <SharedContent>
               <UserInfo>
-                <img src={currentUser?.photoURL || UserDefaultAvatar} alt="" />
-                <span>{currentUser?.displayName || "ex. Pesho Peshov"}</span>
+                <img
+                  src={currentUser?.[0]?.avatar || UserDefaultAvatar}
+                  alt=""
+                />
+                <span>{currentUser?.[0]?.name || "ex. Pesho Peshov"}</span>
               </UserInfo>
               <Editor>
                 <textarea

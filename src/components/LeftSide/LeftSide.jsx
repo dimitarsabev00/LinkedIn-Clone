@@ -20,11 +20,11 @@ const LeftSide = () => {
           <Photo
             style={{
               backgroundImage: `url(${
-                currentUser?.photoURL || UserDefaultAvatar
+                currentUser?.[0]?.avatar || UserDefaultAvatar
               })`,
             }}
           />
-          <Link>{currentUser?.displayName}</Link>
+          <Link>{currentUser?.[0]?.name}</Link>
           <SecondTextAfterPhoto>Front End Developer</SecondTextAfterPhoto>
         </UserInfo>
         <Widget>

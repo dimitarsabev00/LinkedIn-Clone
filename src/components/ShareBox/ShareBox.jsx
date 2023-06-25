@@ -32,7 +32,7 @@ const ShareBox = () => {
     <>
       <ShareBoxWrapper>
         <div>
-          <img src={currentUser?.photoURL || UserDefaultAvatar} alt="" />
+          <img src={currentUser?.[0]?.avatar || UserDefaultAvatar} alt="" />
           <button onClick={handleClick}>Start a post</button>
         </div>
         {/* <div>

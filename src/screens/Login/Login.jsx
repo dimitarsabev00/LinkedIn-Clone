@@ -15,7 +15,14 @@ const Login = () => {
   const dispatch = useDispatch();
   return (
     <LoginWrapper>
-      <img src={LoginLogo} width={"80px"} />
+      <img
+        src={LoginLogo}
+        width={"80px"}
+        onClick={() => {
+          navigate("/");
+        }}
+        style={{ cursor: "pointer" }}
+      />
 
       <InnerLoginWrapper>
         <div

@@ -3,10 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import LoginLogo from "../../assets/icons/login-logo.svg";
 import styled from "styled-components";
-import {
-  loginUserWithEmailAndPassword,
-  registerUserWithEmailAndPassword,
-} from "../../store";
+import { registerUserWithEmailAndPassword } from "../../store";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -19,7 +16,14 @@ const Register = () => {
   const dispatch = useDispatch();
   return (
     <LoginWrapper>
-      <img src={LoginLogo} width={"80px"} />
+      <img
+        src={LoginLogo}
+        width={"80px"}
+        onClick={() => {
+          navigate("/");
+        }}
+        style={{ cursor: "pointer" }}
+      />
 
       <InnerLoginWrapper>
         <div

@@ -2,15 +2,39 @@
 import styled from "styled-components";
 // import UserDefaultAvatar from "../../assets/icons/user-default-avatar.svg";
 import ThreeDotsIcon from "@mui/icons-material/MoreHoriz";
-import LikeIcon from "@mui/icons-material/ThumbUp";
+import { BiSolidLike, BiLike } from "react-icons/bi";
 import CommentIcon from "@mui/icons-material/Comment";
 import ShareIcon from "@mui/icons-material/Share";
 import SendIcon from "@mui/icons-material/Send";
 import LikeReactionIcon from "@mui/icons-material/Recommend";
 import ReactPlayer from "react-player";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getLikesByUser, likePost } from "../../store/slices/generalSlice";
+import { useState } from "react";
+import { useEffect } from "react";
 const Post = ({ post }) => {
+  const [liked, setLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(0);
+
+  const currentUser = useSelector(({ generalSlice }) => generalSlice.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const userId = currentUser?.[0]?.userID;
+  const handleLike = () => {
+    dispatch(
+      likePost({
+        userId,
+        postId: post?.id,
+        liked,
+      })
+    );
+  };
+  useEffect(() => {
+    dispatch(
+      getLikesByUser({ userId, postId: post?.id, setLiked, setLikesCount })
+    );
+  }, [userId, post?.id]);
   return (
     <PostWrapper>
       <AuthorDetails>
@@ -45,20 +69,28 @@ const Post = ({ post }) => {
         )}
       </Image>
       <PostDetails>
-        <li>
-          <button>
-            <LikeReactionIcon />
-            <span>75</span>
-          </button>
-        </li>
+        {likesCount >= 1 && (
+          <li>
+            <button>
+              <LikeReactionIcon />
+              <span>{likesCount}</span>
+            </button>
+          </li>
+        )}
+
         <li>
           <p>2 comments</p>
         </li>
       </PostDetails>
       <PostActions>
-        <button>
-          <LikeIcon />
-          <span>Like</span>
+        <button onClick={handleLike}>
+          {liked ? (
+            <BiSolidLike size={30} color={"#0a66c2"} />
+          ) : (
+            <BiLike size={30} />
+          )}
+
+          <span style={{ color: liked && "#0a66c2" }}>Like</span>
         </button>
         <button>
           <CommentIcon />
@@ -196,7 +228,7 @@ const PostActions = styled.div`
     display: inline-flex;
     align-items: center;
     padding: 8px;
-    color: #0a66c2;
+    color: #676667;
     border: none;
     background-color: white;
     @media (min-width: 768px) {

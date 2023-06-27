@@ -18,6 +18,8 @@ import {
   getDoc,
   updateDoc,
   where,
+  deleteDoc,
+  setDoc,
 } from "firebase/firestore";
 import uuid from "react-uuid";
 import { toast } from "react-toastify";
@@ -272,6 +274,39 @@ export const getCurrentProfileForSingleUser =
       });
       dispatch(setGeneralFields({ currentProfile: result }));
     });
+  };
+export const likePost =
+  ({ userId, postId, liked }) =>
+  async () => {
+    try {
+      const docToLike = doc(collection(db, "likes"), `${userId}_${postId}`);
+      if (liked) {
+        deleteDoc(docToLike);
+      } else {
+        setDoc(docToLike, { userId, postId });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+export const getLikesByUser =
+  ({ userId, postId, setLiked, setLikesCount }) =>
+  async () => {
+    try {
+      let likeQuery = query(collection(db, "likes"), where("postId", "==", postId));
+  
+      onSnapshot(likeQuery, (snapshot) => {
+        let likes = snapshot.docs.map((doc) => doc.data());
+        let likesCount = likes?.length;
+  
+        const isLiked = likes.some((like) => like.userId === userId);
+  
+        setLikesCount(likesCount);
+        setLiked(isLiked);
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
 export default generalSlice.reducer;

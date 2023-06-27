@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import styled from "styled-components";
 // import UserDefaultAvatar from "../../assets/icons/user-default-avatar.svg";

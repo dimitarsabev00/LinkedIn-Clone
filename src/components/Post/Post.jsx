@@ -99,7 +99,7 @@ const Post = ({ post }) => {
         )}
 
         <li>
-          <p>2 comments</p>
+          <p>{`${comments?.length} comments`}</p>
         </li>
       </PostDetails>
       <PostActions>

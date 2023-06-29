@@ -4,25 +4,29 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { Header, Post, ProfileEdit } from "../../components";
+import { FileUploadModal, Header, Post, ProfileEdit } from "../../components";
 import { HiOutlinePencil } from "react-icons/hi";
 import {
   getAllPostsForSingleUser,
   getCurrentProfileForSingleUser,
   getPosts,
   setGeneralFields,
+  uploadProfileImage,
 } from "../../store";
 import { useLocation } from "react-router-dom";
 
 const Profile = () => {
   const [isEdit, setIsEdit] = useState(false);
+  const [currentImage, setCurrentImage] = useState({});
+  const [progress, setProgress] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
   let location = useLocation();
 
   const currentUser = useSelector(({ generalSlice }) => generalSlice.user);
   const currentProfile = useSelector(
     ({ generalSlice }) => generalSlice.currentProfile
   );
-  console.log(currentProfile);
+  console.log("currentProfile", currentProfile);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getPosts());
@@ -42,6 +46,22 @@ const Profile = () => {
     }
   }, []);
   const posts = useSelector(({ generalSlice }) => generalSlice.posts);
+
+  const getImage = (e) => {
+    setCurrentImage(e.target.files[0]);
+  };
+
+  const uploadImage = () => {
+    dispatch(
+      uploadProfileImage({
+        currentImage,
+        currentUserId: currentProfile?.[0]?.userID || currentUser?.[0]?.userID,
+        setModalOpen,
+        setProgress,
+        setCurrentImage,
+      })
+    );
+  };
   return (
     <ProfileWrapper>
       <Header />
@@ -49,6 +69,14 @@ const Profile = () => {
         <ProfileEdit setIsEdit={setIsEdit} />
       ) : (
         <>
+          <FileUploadModal
+            getImage={getImage}
+            uploadImage={uploadImage}
+            modalOpen={modalOpen}
+            setModalOpen={setModalOpen}
+            currentImage={currentImage}
+            progress={progress}
+          />
           <ProfileCard>
             <EditIconWrapper>
               <HiOutlinePencil
@@ -66,6 +94,15 @@ const Profile = () => {
                   flexDirection: "column",
                 }}
               >
+                <ProfileImage
+                  onClick={() => setModalOpen(true)}
+                  src={
+                    currentProfile?.length === 0
+                      ? currentUser?.[0]?.avatar
+                      : currentProfile?.[0]?.avatar
+                  }
+                  alt="profile-image"
+                />
                 <DisplayName>
                   {currentProfile?.length === 0
                     ? currentUser?.[0]?.name
@@ -221,5 +258,13 @@ const RightInfo = styled.div`
     margin-bottom: 5px;
   }
 `;
-
+const ProfileImage = styled.img`
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  border-radius: 50%;
+  border: 2px solid #cacaca;
+  padding: 5px;
+  cursor: pointer;
+`;
 export default Profile;

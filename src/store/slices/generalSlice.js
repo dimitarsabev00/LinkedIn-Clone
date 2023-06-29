@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 import { createSlice } from "@reduxjs/toolkit";
 import {
   createUserWithEmailAndPassword,
@@ -346,6 +348,40 @@ export const getCommentsForSinglePost =
     } catch (err) {
       console.log(err);
     }
+  };
+export const uploadProfileImage =
+  ({
+    currentImage,
+    currentUserId,
+    setModalOpen,
+    setProgress,
+    setCurrentImage,
+  }) =>
+  async (dispatch) => {
+    const profilePicsRef = ref(storage, `profileImages/${currentImage.name}`);
+    const uploadTask = uploadBytesResumable(profilePicsRef, currentImage);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        setProgress(progress);
+      },
+      (error) => {
+        console.error(err);
+      },
+      async () => {
+        const response = await getDownloadURL(uploadTask.snapshot.ref);
+        await dispatch(
+          editProfile({ payload: { avatar: response }, userID: currentUserId })
+        );
+        await setModalOpen(false);
+        await setCurrentImage({});
+        await setProgress(0);
+      }
+    );
   };
 
 export default generalSlice.reducer;

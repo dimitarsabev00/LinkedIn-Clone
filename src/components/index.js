@@ -7,3 +7,4 @@ export { default as ShareBox } from "./ShareBox";
 export { default as Post } from "./Post";
 export { default as ProfilePopup } from "./ProfilePopup";
 export { default as ProfileEdit } from "./ProfileEdit";
+export { default as FileUploadModal } from "./FileUploadModal";

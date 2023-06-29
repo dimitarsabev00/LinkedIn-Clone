@@ -4,19 +4,27 @@ import styled from "styled-components";
 // import UserDefaultAvatar from "../../assets/icons/user-default-avatar.svg";
 import ThreeDotsIcon from "@mui/icons-material/MoreHoriz";
 import { BiSolidLike, BiLike } from "react-icons/bi";
-import CommentIcon from "@mui/icons-material/Comment";
+import { AiOutlineComment } from "react-icons/ai";
 import ShareIcon from "@mui/icons-material/Share";
 import SendIcon from "@mui/icons-material/Send";
 import LikeReactionIcon from "@mui/icons-material/Recommend";
 import ReactPlayer from "react-player";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getLikesByUser, likePost } from "../../store/slices/generalSlice";
+import {
+  addedCommentForSinglePost,
+  getCommentsForSinglePost,
+  getLikesByUser,
+  likePost,
+} from "../../store/slices/generalSlice";
 import { useState } from "react";
 import { useEffect } from "react";
 const Post = ({ post }) => {
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
+  const [showComments, setShowComments] = useState(false);
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
 
   const currentUser = useSelector(({ generalSlice }) => generalSlice.user);
   const navigate = useNavigate();
@@ -31,10 +39,21 @@ const Post = ({ post }) => {
       })
     );
   };
+  const addComment = () => {
+    dispatch(
+      addedCommentForSinglePost({
+        postId: post?.id,
+        comment,
+        displayNameUser: currentUser?.[0]?.name,
+      })
+    );
+    setComment("");
+  };
   useEffect(() => {
     dispatch(
       getLikesByUser({ userId, postId: post?.id, setLiked, setLikesCount })
     );
+    dispatch(getCommentsForSinglePost({ postId: post?.id, setComments }));
   }, [userId, post?.id]);
   return (
     <PostWrapper>
@@ -93,8 +112,13 @@ const Post = ({ post }) => {
 
           <span style={{ color: liked && "#0a66c2" }}>Like</span>
         </button>
-        <button>
-          <CommentIcon />
+        <button
+          onClick={() => {
+            setShowComments((prev) => !prev);
+          }}
+          style={{ color: showComments && "#0a66c2" }}
+        >
+          <AiOutlineComment size={30} />
           <span>Comments</span>
         </button>
         <button>
@@ -106,6 +130,43 @@ const Post = ({ post }) => {
           <span>Send</span>
         </button>
       </PostActions>
+      {showComments && (
+        <div style={{ paddingBottom: "1rem" }}>
+          <CommentInputWrapper>
+            <div style={{ display: "flex" }}>
+              <input
+                placeholder="Add a comment..."
+                onChange={(e) => {
+                  setComment(e.target.value);
+                }}
+                value={comment}
+              />
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <button onClick={addComment}>Add comment</button>
+            </div>
+          </CommentInputWrapper>
+          <div>
+            {comments.length > 0 ? (
+              comments.map(({ id, comment, createdAt, displayNameUser }) => {
+                return (
+                  <SingleComment key={id}>
+                    <h6 className="name">{displayNameUser}</h6>
+                    <p className="comment">{comment}</p>
+
+                    <p className="createdAt">{createdAt}</p>
+                    {/* 
+                  <p>•</p>
+                   */}
+                  </SingleComment>
+                );
+              })
+            ) : (
+              <></>
+            )}
+          </div>
+        </div>
+      )}
     </PostWrapper>
   );
 };
@@ -221,7 +282,6 @@ const PostDetails = styled.ul`
 const PostActions = styled.div`
   display: flex;
   align-items: center;
-  /* justify-content: space-between; */
   margin: 0;
   min-height: 40px;
   padding: 4px 8px;
@@ -232,11 +292,69 @@ const PostActions = styled.div`
     color: #676667;
     border: none;
     background-color: white;
+    cursor: pointer;
     @media (min-width: 768px) {
       span {
         margin-left: 8px;
       }
     }
+  }
+`;
+const CommentInputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  padding-top: 0;
+  div {
+    input {
+      flex: 1;
+      height: 40px;
+      padding-left: 10px;
+      border-radius: 30px;
+      border: 1px solid #737373;
+      color: #4b4b4b;
+      font-size: 16px;
+      outline: none;
+    }
+  }
+
+  button {
+    width: 150px;
+    height: 35px;
+    background-color: #0a66c2;
+    color: white;
+    outline: none;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+`;
+const SingleComment = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  border: 1px solid rgb(227, 227, 227);
+  border-radius: 10px;
+  position: relative;
+  margin: 10px;
+  align-items: flex-start;
+  .name {
+    color: #212121;
+    text-decoration: none;
+    margin-left: 10px;
+    margin-top: 10px;
+  }
+
+  .comment {
+    margin: 10px;
+  }
+
+  .createdAt {
+    position: absolute;
+    right: 10px;
+    top: 10px;
   }
 `;
 export default Post;

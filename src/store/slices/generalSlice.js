@@ -293,16 +293,55 @@ export const getLikesByUser =
   ({ userId, postId, setLiked, setLikesCount }) =>
   async () => {
     try {
-      let likeQuery = query(collection(db, "likes"), where("postId", "==", postId));
-  
+      let likeQuery = query(
+        collection(db, "likes"),
+        where("postId", "==", postId)
+      );
+
       onSnapshot(likeQuery, (snapshot) => {
         let likes = snapshot.docs.map((doc) => doc.data());
         let likesCount = likes?.length;
-  
+
         const isLiked = likes.some((like) => like.userId === userId);
-  
+
         setLikesCount(likesCount);
         setLiked(isLiked);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+export const addedCommentForSinglePost =
+  ({ postId, comment, displayNameUser }) =>
+  async () => {
+    try {
+      addDoc(collection(db, "comments"), {
+        postId,
+        comment,
+        createdAt: moment().format("DD/MM/YYYY"),
+        displayNameUser,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+export const getCommentsForSinglePost =
+  ({ postId, setComments }) =>
+  async () => {
+    try {
+      let singlePostQuery = query(
+        collection(db, "comments"),
+        where("postId", "==", postId)
+      );
+
+      onSnapshot(singlePostQuery, (snapshot) => {
+        const comments = snapshot.docs.map((doc) => {
+          return {
+            id: doc.id,
+            ...doc.data(),
+          };
+        });
+        setComments(comments);
       });
     } catch (err) {
       console.log(err);

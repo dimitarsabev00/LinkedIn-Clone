@@ -30,6 +30,7 @@ const initialState = {
   user: null,
   posts: [],
   currentProfile: [],
+  allUsers: [],
 };
 export const generalSlice = createSlice({
   name: "generalSlice",
@@ -383,5 +384,14 @@ export const uploadProfileImage =
       }
     );
   };
+
+export const getAllUsers = () => async (dispatch) => {
+  await onSnapshot(collection(db, "users"), (snapshot) => {
+    const result = snapshot.docs.map((docs) => {
+      return { ...docs.data(), id: docs.id };
+    });
+    dispatch(setGeneralFields({ allUsers: result }));
+  });
+};
 
 export default generalSlice.reducer;

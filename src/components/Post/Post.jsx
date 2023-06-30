@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addedCommentForSinglePost,
+  getAllUsers,
   getCommentsForSinglePost,
   getLikesByUser,
   likePost,
@@ -27,6 +28,8 @@ const Post = ({ post }) => {
   const [comments, setComments] = useState([]);
 
   const currentUser = useSelector(({ generalSlice }) => generalSlice.user);
+  const allUsers = useSelector(({ generalSlice }) => generalSlice.allUsers);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userId = currentUser?.[0]?.userID;
@@ -55,11 +58,22 @@ const Post = ({ post }) => {
     );
     dispatch(getCommentsForSinglePost({ postId: post?.id, setComments }));
   }, [userId, post?.id]);
+  useEffect(() => {
+    dispatch(getAllUsers());
+  }, []);
+
   return (
     <PostWrapper>
       <AuthorDetails>
         <a href="">
-          <img src={post?.author?.avatar} alt="" />
+          <img
+            src={
+              allUsers
+                .filter((item) => item?.id === post?.author?.id)
+                .map((item) => item?.avatar)[0]
+            }
+            alt=""
+          />
           <div>
             <span
               onClick={() =>

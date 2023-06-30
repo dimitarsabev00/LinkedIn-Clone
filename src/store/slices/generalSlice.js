@@ -397,7 +397,7 @@ export const deletePost =
   ({ postId }) =>
   async () => {
     try {
-      deleteDoc(doc(collection(db, "posts"), postId));
+      await deleteDoc(doc(collection(db, "posts"), postId));
       toast.success("Post has been Deleted!");
     } catch (err) {
       console.log(err);

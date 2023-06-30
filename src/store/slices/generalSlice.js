@@ -393,5 +393,15 @@ export const getAllUsers = () => async (dispatch) => {
     dispatch(setGeneralFields({ allUsers: result }));
   });
 };
+export const deletePost =
+  ({ postId }) =>
+  async () => {
+    try {
+      deleteDoc(doc(collection(db, "posts"), postId));
+      toast.success("Post has been Deleted!");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
 export default generalSlice.reducer;

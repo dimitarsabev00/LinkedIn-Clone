@@ -1,9 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import styled from "styled-components";
-// import UserDefaultAvatar from "../../assets/icons/user-default-avatar.svg";
-import ThreeDotsIcon from "@mui/icons-material/MoreHoriz";
 import { BiSolidLike, BiLike } from "react-icons/bi";
+import { BsPencil, BsTrash } from "react-icons/bs";
 import { AiOutlineComment } from "react-icons/ai";
 import ShareIcon from "@mui/icons-material/Share";
 import SendIcon from "@mui/icons-material/Send";
@@ -13,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addedCommentForSinglePost,
+  deletePost,
   getAllUsers,
   getCommentsForSinglePost,
   getLikesByUser,
@@ -90,9 +90,21 @@ const Post = ({ post }) => {
             <span>{post?.author?.createdAt}</span>
           </div>
         </a>
-        <button>
-          <ThreeDotsIcon />
-        </button>
+        <div className="actions-container">
+          <BsPencil
+            size={20}
+            style={{ color: "#474747", padding: "10px" }}
+            className="action-icon"
+            // onClick={() => getEditData(posts)}
+          />
+
+          <BsTrash
+            size={20}
+            className="action-icon"
+            style={{ color: "#474747", padding: "10px" }}
+            onClick={() => dispatch(deletePost({ postId: post?.id }))}
+          />
+        </div>
       </AuthorDetails>
       <Description>{post?.description}</Description>
       <Image>
@@ -238,13 +250,23 @@ border-radius:50%;
     }
   }
 }
-button {
+.actions-container {
   position: absolute; 
-right:12px;
-top:0;
+right:10px;
 background:transparent;
 border:none;
 outline:none;
+.action-icon{
+  color: #474747;
+    padding: 10px;
+    cursor:pointer;
+    &:hover {
+      color: #000000;
+    background-color: #b7b7b7;
+    padding: 10px;
+    border-radius: 50%;
+    }
+}
 }
 `;
 const Description = styled.div`

@@ -147,7 +147,7 @@ export const logout =
     }
   };
 export const createPost =
-  ({ payload }) =>
+  ({ payload, onSuccess }) =>
   async () => {
     try {
       if (payload?.image !== "") {
@@ -183,6 +183,9 @@ export const createPost =
           }
         );
         toast.success("Post has been added successfully!");
+        if (onSuccess) {
+          onSuccess();
+        }
       } else if (payload?.video !== "") {
         await addDoc(collection(db, "posts"), {
           author: {
@@ -198,6 +201,9 @@ export const createPost =
           description: payload?.description,
         });
         toast.success("Post has been added successfully!");
+        if (onSuccess) {
+          onSuccess();
+        }
       } else {
         await addDoc(collection(db, "posts"), {
           author: {
@@ -213,6 +219,9 @@ export const createPost =
           description: payload?.description,
         });
         toast.success("Post has been added successfully!");
+        if (onSuccess) {
+          onSuccess();
+        }
       }
     } catch (error) {
       console.log(error);
@@ -399,6 +408,19 @@ export const deletePost =
     try {
       await deleteDoc(doc(collection(db, "posts"), postId));
       toast.success("Post has been Deleted!");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+export const updatePost =
+  ({ postId, description, onSuccess }) =>
+  async () => {
+    try {
+      updateDoc(doc(collection(db, "posts"), postId), { description });
+      if (onSuccess) {
+        onSuccess();
+      }
+      toast.success("Post has been updated!");
     } catch (err) {
       console.log(err);
     }

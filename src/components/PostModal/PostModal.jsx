@@ -1,17 +1,22 @@
 /* eslint-disable react/prop-types */
 import styled from "styled-components";
-import CloseIcon from "@mui/icons-material/Close";
-import UserDefaultAvatar from "../../assets/icons/user-default-avatar.svg";
 import ImageIcon from "@mui/icons-material/Image";
 import YouTubeIcon from "@mui/icons-material/YouTube";
-import CommentIcon from "@mui/icons-material/Comment";
 import { useState } from "react";
 import ReactPlayer from "react-player";
 import { useDispatch, useSelector } from "react-redux";
-import { createPost } from "../../store/slices/generalSlice";
+import { createPost, updatePost } from "../../store/slices/generalSlice";
+import { Button, Modal } from "antd";
 
-const PostModal = ({ showModal, handleClick }) => {
-  const [description, setDescription] = useState("");
+const PostModal = ({
+  showPostModal,
+  setShowPostModal,
+  description,
+  setDescription,
+  isEdit,
+  setIsEdit,
+  currentEditPost,
+}) => {
   const [image, setImage] = useState("");
   const [videoLink, setVideoLink] = useState("");
   const [assetArea, setAssetArea] = useState("");
@@ -32,11 +37,7 @@ const PostModal = ({ showModal, handleClick }) => {
     setVideoLink("");
     setAssetArea(area);
   };
-  const createPostInModal = (e) => {
-    e.preventDefault();
-    if (e.target !== e.currentTarget) {
-      return;
-    }
+  const createNewPost = () => {
     dispatch(
       createPost({
         payload: {
@@ -45,78 +46,104 @@ const PostModal = ({ showModal, handleClick }) => {
           user: currentUser,
           description: description,
         },
+        onSuccess: () => {
+          setShowPostModal(false);
+
+          setDescription("");
+          setIsEdit(false);
+        },
       })
     );
-    reset(e);
   };
-  const reset = (e) => {
-    setDescription("");
-    setImage("");
-    setVideoLink("");
-    setAssetArea("");
-
-    handleClick(e);
+  const updatePostFunc = () => {
+    dispatch(
+      updatePost({
+        postId: currentEditPost?.id,
+        description,
+        onSuccess: () => {
+          setShowPostModal(false);
+        },
+      })
+    );
   };
   return (
     <>
-      {showModal === "open" && (
-        <Container>
-          <Content>
-            <Header>
-              <h2>Create a post</h2>
-              <button onClick={(e) => reset(e)}>
-                <CloseIcon />
-              </button>
-            </Header>
-            <SharedContent>
-              <UserInfo>
-                <img
-                  src={currentUser?.[0]?.avatar || UserDefaultAvatar}
-                  alt=""
+      <Modal
+        title={isEdit ? "Edit a post" : "Create a post"}
+        centered
+        open={showPostModal}
+        onOk={() => {
+          setDescription("");
+          setImage("");
+          setVideoLink("");
+          setAssetArea("");
+          setShowPostModal(false);
+        }}
+        onCancel={() => {
+          setDescription("");
+          setImage("");
+          setVideoLink("");
+          setAssetArea("");
+          setShowPostModal(false);
+        }}
+        footer={[
+          <Button
+            onClick={isEdit ? updatePostFunc : createNewPost}
+            key="submit"
+            type="primary"
+            disabled={description.length > 0 ? false : true}
+          >
+            {isEdit ? "Update" : "Post"}
+          </Button>,
+        ]}
+      >
+        {!isEdit && (
+          <UserInfo>
+            <img src={currentUser?.[0]?.avatar} alt="" />
+            <span>{currentUser?.[0]?.name}</span>
+          </UserInfo>
+        )}
+
+        <PostModalBody>
+          <Editor>
+            <textarea
+              value={description}
+              onChange={(e) => {
+                setDescription(e.target.value);
+              }}
+              placeholder="What do you want to talk about?"
+              autoFocus
+            />
+            {assetArea === "image" ? (
+              <UploadImage>
+                <input
+                  type="file"
+                  accept="image/gif, image/jpeg, image/png"
+                  name="image"
+                  id="file"
+                  style={{ display: "none" }}
+                  onChange={handleChange}
                 />
-                <span>{currentUser?.[0]?.name || "ex. Pesho Peshov"}</span>
-              </UserInfo>
-              <Editor>
-                <textarea
-                  value={description}
-                  onChange={(e) => {
-                    setDescription(e.target.value);
-                  }}
-                  placeholder="What do you want to talk about?"
-                  autoFocus
-                />
-                {assetArea === "image" ? (
-                  <UploadImage>
-                    <input
-                      type="file"
-                      accept="image/gif, image/jpeg, image/png"
-                      name="image"
-                      id="file"
-                      style={{ display: "none" }}
-                      onChange={handleChange}
-                    />
-                    <p>
-                      <label htmlFor="file">Select an image to share</label>
-                    </p>
-                    {image && <img src={URL.createObjectURL(image)} />}
-                  </UploadImage>
-                ) : (
-                  assetArea === "media" && (
-                    <>
-                      <input
-                        type="text"
-                        placeholder="Please input a video link"
-                        value={videoLink}
-                        onChange={(e) => setVideoLink(e.target.value)}
-                      />
-                      {videoLink && (
-                        <ReactPlayer width={"100%"} url={videoLink} />
-                      )}
-                    </>
-                  )
-                )}
-              </Editor>
-            </SharedContent>
+                <p>
+                  <label htmlFor="file">Select an image to share</label>
+                </p>
+                {image && <img src={URL.createObjectURL(image)} />}
+              </UploadImage>
+            ) : (
+              assetArea === "media" && (
+                <>
+                  <input
+                    type="text"
+                    placeholder="Please input a video link"
+                    value={videoLink}
+                    onChange={(e) => setVideoLink(e.target.value)}
+                  />
+                  {videoLink && <ReactPlayer width={"100%"} url={videoLink} />}
+                </>
+              )
+            )}
+          </Editor>
+          {!isEdit && (
             <ShareCreation>
               <AttachAssets>
                 <AssetButton onClick={() => switchAssetArea("image")}>
@@ -126,92 +153,41 @@ const PostModal = ({ showModal, handleClick }) => {
                   <YouTubeIcon />
                 </AssetButton>
               </AttachAssets>
-              <ShareComment>
-                <AssetButton>
-                  <CommentIcon />
-                  Anyone
-                </AssetButton>
-              </ShareComment>
-              <PostButton
-                disabled={!description}
-                onClick={(e) => {
-                  createPostInModal(e);
-                }}
-              >
-                Post
-              </PostButton>
             </ShareCreation>
-          </Content>
-        </Container>
-      )}
+          )}
+        </PostModalBody>
+      </Modal>
     </>
   );
 };
-const Container = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 9999;
-  color: black;
-  background-color: rgba(0, 0, 0, 0.8);
-  animation: fadeIn 0.3s;
-`;
-const Content = styled.div`
-  width: 100%;
-  max-width: 552px;
-  background-color: white;
-  max-height: 90%;
-  overflow: initial;
-  border-radius: 5px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  top: 32px;
-  margin: 0 auto;
-`;
-const Header = styled.div`
-  display: block;
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
-  font-size: 16px;
-  line-height: 1.5;
-  color: rgba(0, 0, 0, 0.6);
-  font-weight: 400;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  button {
-    height: 40px;
-    width: 40px;
-    max-width: auto;
-    color: rgba(0, 0, 0, 0.15);
-    border: none;
-    border-radius: 50%;
-    background-color: #fefffe;
-    &:hover {
-      cursor: pointer;
-    }
-    svg,
-    img {
-      pointer-events: none;
-    }
+const PostModalBody = styled.div`
+  .modal-input {
+    border: none !important;
+    background-color: white;
+    outline: none;
+    color: black;
+    font-size: 16px;
+    font-family: system-ui;
+    width: 100%;
+    resize: none;
+  }
+
+  .ql-container.ql-snow,
+  .ql-toolbar.ql-snow {
+    border: none !important;
+  }
+
+  .ql-container.ql-snow {
+    font-size: 20px;
+    font-family: system-ui;
   }
 `;
-const SharedContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  overflow-y: auto;
-  vertical-align: baseline;
-  background: transparent;
-  padding: 8px 12px;
-`;
+
 const UserInfo = styled.div`
   display: flex;
   align-items: center;
   padding: 12px 24px;
+  padding-left: 0px;
   svg,
   img {
     width: 48px;
@@ -230,7 +206,7 @@ const UserInfo = styled.div`
 const ShareCreation = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 12px 24px 12px 16px;
+  padding: 12px 24px 12px 0px;
 `;
 const AssetButton = styled.button`
   display: flex;
@@ -250,32 +226,10 @@ const AttachAssets = styled.div`
     width: 40px;
   }
 `;
-const ShareComment = styled.div`
-  padding-left: 8px;
-  margin-right: auto;
-  border-left: 1px solid rgba(0, 0, 0, 0.15);
-  ${AssetButton} {
-    svg {
-      margin-right: 5px;
-    }
-  }
-`;
-const PostButton = styled.button`
-  min-width: 60px;
-  border-radius: 20px;
-  padding-left: 16px;
-  padding-right: 16px;
-  background: ${({ disabled }) => (disabled ? "#EEECEF" : "#0a66c2")};
-  color: ${({ disabled }) => (disabled ? "#C1BEC0" : "white")};
-  border: none;
-  font-weight: 700;
-  &:hover {
-    background: ${({ disabled }) => (disabled ? "#EEECEF" : "#004182")};
-    cursor: ${({ disabled }) => !disabled && "pointer"};
-  }
-`;
+
 const Editor = styled.div`
   padding: 12px 24px;
+  padding-left: 0px;
   textarea {
     width: 100%;
     min-height: 100px;

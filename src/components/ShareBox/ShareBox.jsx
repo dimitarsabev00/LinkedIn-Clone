@@ -1,60 +1,24 @@
+/* eslint-disable react/prop-types */
 import styled from "styled-components";
-import UserDefaultAvatar from "../../assets/icons/user-default-avatar.svg";
-import AddImageIcon from "@mui/icons-material/Image";
-import AddVideoIcon from "@mui/icons-material/VideoLibrary";
-import AddEventIcon from "@mui/icons-material/EventNote";
-import AddArticleIcon from "@mui/icons-material/Notes";
 import { useSelector } from "react-redux";
-import { useState } from "react";
-import PostModal from "../PostModal";
-const ShareBox = () => {
+const ShareBox = ({ setShowPostModal, setIsEdit }) => {
   const currentUser = useSelector(({ generalSlice }) => generalSlice.user);
-  const [showModal, setShowModal] = useState("close");
-  const handleClick = (e) => {
-    e.preventDefault();
-    if (e.target !== e.currentTarget) {
-      return;
-    }
-    switch (showModal) {
-      case "open":
-        setShowModal("close");
-        break;
-      case "close":
-        setShowModal("open");
-        break;
 
-      default:
-        setShowModal("close");
-        break;
-    }
-  };
   return (
     <>
       <ShareBoxWrapper>
         <div>
-          <img src={currentUser?.[0]?.avatar || UserDefaultAvatar} alt="" />
-          <button onClick={handleClick}>Start a post</button>
+          <img src={currentUser?.[0]?.avatar} alt="" />
+          <button
+            onClick={() => {
+              setShowPostModal(true);
+              setIsEdit(false);
+            }}
+          >
+            Start a post
+          </button>
         </div>
-        {/* <div>
-          <button>
-            <AddImageIcon style={{ color: "#7CBBF3" }} />
-            <span>Photo</span>
-          </button>
-          <button>
-            <AddVideoIcon style={{ color: "#8AC464" }} />
-            <span>Video</span>
-          </button>
-          <button>
-            <AddEventIcon style={{ color: "#EBA93E" }} />
-            <span>Event</span>
-          </button>
-          <button>
-            <AddArticleIcon style={{ color: "#F89F88" }} />
-            <span>Write Article</span>
-          </button>
-        </div> */}
       </ShareBoxWrapper>
-      <PostModal showModal={showModal} handleClick={handleClick} />
     </>
   );
 };

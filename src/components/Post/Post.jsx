@@ -20,7 +20,7 @@ import {
 } from "../../store/slices/generalSlice";
 import { useState } from "react";
 import { useEffect } from "react";
-const Post = ({ post }) => {
+const Post = ({ post, getEditData }) => {
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [showComments, setShowComments] = useState(false);
@@ -90,12 +90,13 @@ const Post = ({ post }) => {
             <span>{post?.author?.createdAt}</span>
           </div>
         </a>
+
         <div className="actions-container">
           <BsPencil
             size={20}
             style={{ color: "#474747", padding: "10px" }}
             className="action-icon"
-            // onClick={() => getEditData(posts)}
+            onClick={() => getEditData(post)}
           />
 
           <BsTrash

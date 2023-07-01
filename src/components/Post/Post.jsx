@@ -90,22 +90,23 @@ const Post = ({ post, getEditData }) => {
             <span>{post?.author?.createdAt}</span>
           </div>
         </a>
+        {currentUser?.[0]?.userID === post?.author?.id && (
+          <div className="actions-container">
+            <BsPencil
+              size={20}
+              style={{ color: "#474747", padding: "10px" }}
+              className="action-icon"
+              onClick={() => getEditData(post)}
+            />
 
-        <div className="actions-container">
-          <BsPencil
-            size={20}
-            style={{ color: "#474747", padding: "10px" }}
-            className="action-icon"
-            onClick={() => getEditData(post)}
-          />
-
-          <BsTrash
-            size={20}
-            className="action-icon"
-            style={{ color: "#474747", padding: "10px" }}
-            onClick={() => dispatch(deletePost({ postId: post?.id }))}
-          />
-        </div>
+            <BsTrash
+              size={20}
+              className="action-icon"
+              style={{ color: "#474747", padding: "10px" }}
+              onClick={() => dispatch(deletePost({ postId: post?.id }))}
+            />
+          </div>
+        )}
       </AuthorDetails>
       <Description>{post?.description}</Description>
       <Image>

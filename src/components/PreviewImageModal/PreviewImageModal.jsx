@@ -23,7 +23,7 @@ const PreviewImageModal = ({
           src={postImage}
           className="post-image modal"
           alt="post-image"
-          style={{ width: "100%" }}
+          style={{ width: "100%", marginTop: "30px" }}
         />
       </Modal>
     </div>

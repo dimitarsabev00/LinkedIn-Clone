@@ -85,7 +85,10 @@ const Post = ({ post, getEditData }) => {
                 })
               }
             >
-              {post?.author?.fullName}
+              {
+                allUsers.filter((user) => user?.id === post?.author?.id)[0]
+                  ?.name
+              }
             </span>
             <span>{post?.author?.createdAt}</span>
           </div>

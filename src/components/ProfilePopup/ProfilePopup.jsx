@@ -16,7 +16,11 @@ const ProfilePopup = () => {
       <Headline>{currentUser?.[0]?.headline}</Headline>
       <button
         onClick={() => {
-          navigate("/profile");
+          navigate("/profile", {
+            state: {
+              id: currentUser?.[0]?.userID,
+            },
+          });
         }}
       >
         View Profile

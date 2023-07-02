@@ -1,10 +1,22 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from "styled-components";
 import FeedInfoIcon from "../../assets/icons/feed-info-icon.svg";
-import UserDefaultAvatar from "../../assets/icons/user-default-avatar.svg";
 import ArrowRightIcon from "../../assets/icons/arrow-right-icon.svg";
 import BannerForJobLinkedIn from "../../assets/images/banner_for_job_LinkedIn.jpeg";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getAllUsers } from "../../store";
+import { useNavigate } from "react-router-dom";
 
 const RightSide = () => {
+  const allUsers = useSelector(({ generalSlice }) => generalSlice.allUsers);
+  const currentUser = useSelector(({ generalSlice }) => generalSlice.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  useEffect(() => {
+    dispatch(getAllUsers());
+  }, []);
+
   return (
     <Container>
       <FollowCard>
@@ -14,38 +26,42 @@ const RightSide = () => {
         </Title>
 
         <FeedList>
-          <li>
-            <a>
-              <Avatar
-                style={{
-                  backgroundImage: `url(${UserDefaultAvatar})`,
-                }}
-              />
-            </a>
+          {allUsers?.length > 1 ? (
             <div>
-              <span>Gabriela K.</span>
-              <button>Follow</button>
+              {allUsers?.map((user) => {
+                return user?.id === currentUser?.[0]?.userID ? (
+                  <></>
+                ) : (
+                  <li key={user?.id}>
+                    <a>
+                      <Avatar
+                        style={{
+                          backgroundImage: `url(${user?.avatar})`,
+                        }}
+                      />
+                    </a>
+                    <div>
+                      <span>{user?.name}</span>
+                      {/* <button>Follow</button> */}
+                    </div>
+                  </li>
+                );
+              })}
             </div>
-          </li>
-          <li>
-            <a>
-              <Avatar
-                style={{
-                  backgroundImage: `url(${UserDefaultAvatar})`,
-                }}
-              />
-            </a>
-            <div>
-              <span>Nikol D.</span>
-              <button>Follow</button>
-            </div>
-          </li>
+          ) : (
+            <div>No Users to Follow!</div>
+          )}
         </FeedList>
-
-        <Recommendation>
-          <p>View all recommendations</p>
-          <img src={ArrowRightIcon} alt="" />
-        </Recommendation>
+        {allUsers?.length > 1 && (
+          <Recommendation
+            onClick={() => {
+              navigate("/connections");
+            }}
+          >
+            <p>View all recommendations</p>
+            <img src={ArrowRightIcon} alt="" />
+          </Recommendation>
+        )}
       </FollowCard>
       <BannerCard>
         <img src={BannerForJobLinkedIn} alt="" />
@@ -129,6 +145,7 @@ const Recommendation = styled.a`
   align-items: center;
   font-size: 14px;
   gap: 0.3rem;
+  cursor: pointer;
 `;
 const BannerCard = styled(FollowCard)`
   img {

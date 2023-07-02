@@ -98,7 +98,7 @@ export const registerUserWithEmailAndPassword =
         payload?.email,
         payload?.password
       );
-       await addDoc(collection(db, "users"), {
+      await addDoc(collection(db, "users"), {
         name: payload?.name,
         email: payload?.email,
         avatar:

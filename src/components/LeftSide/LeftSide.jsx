@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import UserCardDefaultBackgroundImage from "../../assets/images/user-card-default-background.svg";
-import UserDefaultAvatar from "../../assets/icons/user-default-avatar.svg";
 import AddUserToNetworkIcon from "../../assets/icons/plus-icon.svg";
 import MyItemsIcon from "../../assets/icons/item-icon.svg";
 import AddEventsIcon from "../../assets/icons/plus-icon.svg";
@@ -19,13 +18,13 @@ const LeftSide = () => {
           />
           <Photo
             style={{
-              backgroundImage: `url(${
-                currentUser?.[0]?.avatar || UserDefaultAvatar
-              })`,
+              backgroundImage: `url(${currentUser?.[0]?.avatar})`,
             }}
           />
           <Link>{currentUser?.[0]?.name}</Link>
-          <SecondTextAfterPhoto>Front End Developer</SecondTextAfterPhoto>
+          <SecondTextAfterPhoto>
+            {currentUser?.[0]?.headline}
+          </SecondTextAfterPhoto>
         </UserInfo>
         <Widget>
           <a>

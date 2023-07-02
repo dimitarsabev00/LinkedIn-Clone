@@ -86,7 +86,18 @@ const PostModal = ({
           setAssetArea("");
           setShowPostModal(false);
         }}
-        footer={null}
+        footer={
+          isEdit && [
+            <Button
+              onClick={isEdit ? updatePostFunc : createNewPost}
+              key="submit"
+              type="primary"
+              disabled={description.length > 0 ? false : true}
+            >
+              Update
+            </Button>,
+          ]
+        }
       >
         {!isEdit && (
           <UserInfo>
@@ -151,7 +162,7 @@ const PostModal = ({
                 disabled={description.length > 0 ? false : true}
                 style={{ marginRight: "-24px" }}
               >
-                {isEdit ? "Update" : "Post"}
+                Post
               </Button>
             </ShareCreation>
           )}

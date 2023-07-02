@@ -29,8 +29,8 @@ const Header = () => {
   const openUser = (user) => {
     navigate("/profile", {
       state: {
-        id: user.id,
-        email: user.email,
+        id: user?.id,
+        email: user?.email,
       },
     });
   };

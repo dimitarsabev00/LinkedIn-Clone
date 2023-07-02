@@ -15,9 +15,9 @@ const Connections = () => {
     <>
       <Header />
       <Container>
-        {allUsers.length > 1 ? (
+        {allUsers?.length > 1 ? (
           <ConnectionsWrapper>
-            {allUsers.map((user) => {
+            {allUsers?.map((user) => {
               return user?.id === currentUser?.[0]?.userID ? (
                 <></>
               ) : (

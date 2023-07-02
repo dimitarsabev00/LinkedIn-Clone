@@ -45,7 +45,6 @@ const Profile = () => {
       );
     }
   }, []);
-  // console.log("locationState", location?.state);
   const posts = useSelector(({ generalSlice }) => generalSlice.posts);
 
   const getImage = (e) => {
@@ -180,13 +179,13 @@ const Profile = () => {
             ) : (
               <>
                 {posts
-                  .filter((item) => {
+                  ?.filter((item) => {
                     return (
                       item?.author?.email ===
                       localStorage.getItem("currentUserEmail")
                     );
                   })
-                  .map((post, index) => (
+                  ?.map((post, index) => (
                     <Post key={index} post={post} />
                   ))}
               </>

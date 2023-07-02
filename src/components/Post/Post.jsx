@@ -20,6 +20,7 @@ import {
   likePost,
   getAllUsers,
   getConnections,
+  deletePost,
 } from "../../store";
 const Post = ({ post, getEditData }) => {
   const [liked, setLiked] = useState(false);
@@ -200,8 +201,8 @@ const Post = ({ post, getEditData }) => {
             </div>
           </CommentInputWrapper>
           <div>
-            {comments.length > 0 ? (
-              comments.map(({ id, comment, createdAt, displayNameUser }) => {
+            {comments?.length > 0 ? (
+              comments?.map(({ id, comment, createdAt, displayNameUser }) => {
                 return (
                   <SingleComment key={id}>
                     <h6 className="name">{displayNameUser}</h6>

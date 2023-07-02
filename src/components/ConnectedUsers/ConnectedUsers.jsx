@@ -46,7 +46,7 @@ const ConnectedUsers = ({ user, currentUserId }) => {
       </p>
       <p className="headline">{user?.headline}</p>
 
-      <button onClick={() => getCurrentUser(user.id)}>
+      <button onClick={() => getCurrentUser(user?.id)}>
         <AiOutlineUsergroupAdd size={20} />
         Connect
       </button>

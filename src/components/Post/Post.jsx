@@ -15,6 +15,7 @@ import {
   deletePost,
   getAllUsers,
   getCommentsForSinglePost,
+  getConnections,
   getLikesByUser,
   likePost,
 } from "../../store/slices/generalSlice";
@@ -26,6 +27,7 @@ const Post = ({ post, getEditData }) => {
   const [showComments, setShowComments] = useState(false);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
+  const [isConnected, setIsConnected] = useState(false);
 
   const currentUser = useSelector(({ generalSlice }) => generalSlice.user);
   const allUsers = useSelector(({ generalSlice }) => generalSlice.allUsers);
@@ -61,144 +63,154 @@ const Post = ({ post, getEditData }) => {
   useEffect(() => {
     dispatch(getAllUsers());
   }, []);
-
+  useEffect(() => {
+    dispatch(
+      getConnections({
+        userId: userId,
+        targetId: post?.author?.id,
+        setIsConnected,
+      })
+    );
+  }, [userId, post?.author?.id]);
   return (
-    <PostWrapper>
-      <AuthorDetails>
-        <a href="">
-          <img
-            src={
-              allUsers
-                .filter((item) => item?.id === post?.author?.id)
-                .map((item) => item?.avatar)[0]
-            }
-            alt=""
-          />
-          <div>
-            <span
-              onClick={() =>
-                navigate("/profile", {
-                  state: {
-                    id: post?.author?.id,
-                    email: post?.author?.email,
-                  },
-                })
+    (isConnected || userId === post?.author?.id) ? (
+      <PostWrapper>
+        <AuthorDetails>
+          <a href="">
+            <img
+              src={
+                allUsers
+                  .filter((item) => item?.id === post?.author?.id)
+                  .map((item) => item?.avatar)[0]
               }
-            >
-              {
-                allUsers.filter((user) => user?.id === post?.author?.id)[0]
-                  ?.name
-              }
-            </span>
-            <span>{post?.author?.createdAt}</span>
-          </div>
-        </a>
-        {currentUser?.[0]?.userID === post?.author?.id && (
-          <div className="actions-container">
-            <BsPencil
-              size={20}
-              style={{ color: "#474747", padding: "10px" }}
-              className="action-icon"
-              onClick={() => getEditData(post)}
+              alt=""
             />
+            <div>
+              <span
+                onClick={() =>
+                  navigate("/profile", {
+                    state: {
+                      id: post?.author?.id,
+                      email: post?.author?.email,
+                    },
+                  })
+                }
+              >
+                {
+                  allUsers.filter((user) => user?.id === post?.author?.id)[0]
+                    ?.name
+                }
+              </span>
+              <span>{post?.author?.createdAt}</span>
+            </div>
+          </a>
+          {currentUser?.[0]?.userID === post?.author?.id && (
+            <div className="actions-container">
+              <BsPencil
+                size={20}
+                style={{ color: "#474747", padding: "10px" }}
+                className="action-icon"
+                onClick={() => getEditData(post)}
+              />
 
-            <BsTrash
-              size={20}
-              className="action-icon"
-              style={{ color: "#474747", padding: "10px" }}
-              onClick={() => dispatch(deletePost({ postId: post?.id }))}
-            />
-          </div>
-        )}
-      </AuthorDetails>
-      <Description>{post?.description}</Description>
-      <Image>
-        {post?.video ? (
-          <ReactPlayer width={"100%"} url={post?.video} />
-        ) : (
-          <>{post?.sharedImage && <img src={post?.sharedImage} alt="" />}</>
-        )}
-      </Image>
-      <PostDetails>
-        {likesCount >= 1 && (
-          <li>
-            <button>
-              <LikeReactionIcon />
-              <span>{likesCount}</span>
-            </button>
-          </li>
-        )}
-
-        <li>
-          <p>{`${comments?.length} comments`}</p>
-        </li>
-      </PostDetails>
-      <PostActions>
-        <button onClick={handleLike}>
-          {liked ? (
-            <BiSolidLike size={30} color={"#0a66c2"} />
-          ) : (
-            <BiLike size={30} />
-          )}
-
-          <span style={{ color: liked && "#0a66c2" }}>Like</span>
-        </button>
-        <button
-          onClick={() => {
-            setShowComments((prev) => !prev);
-          }}
-          style={{ color: showComments && "#0a66c2" }}
-        >
-          <AiOutlineComment size={30} />
-          <span>Comments</span>
-        </button>
-        <button>
-          <ShareIcon />
-          <span>Share</span>
-        </button>
-        <button>
-          <SendIcon />
-          <span>Send</span>
-        </button>
-      </PostActions>
-      {showComments && (
-        <div style={{ paddingBottom: "1rem" }}>
-          <CommentInputWrapper>
-            <div style={{ display: "flex" }}>
-              <input
-                placeholder="Add a comment..."
-                onChange={(e) => {
-                  setComment(e.target.value);
-                }}
-                value={comment}
+              <BsTrash
+                size={20}
+                className="action-icon"
+                style={{ color: "#474747", padding: "10px" }}
+                onClick={() => dispatch(deletePost({ postId: post?.id }))}
               />
             </div>
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <button onClick={addComment}>Add comment</button>
-            </div>
-          </CommentInputWrapper>
-          <div>
-            {comments.length > 0 ? (
-              comments.map(({ id, comment, createdAt, displayNameUser }) => {
-                return (
-                  <SingleComment key={id}>
-                    <h6 className="name">{displayNameUser}</h6>
-                    <p className="comment">{comment}</p>
+          )}
+        </AuthorDetails>
+        <Description>{post?.description}</Description>
+        <Image>
+          {post?.video ? (
+            <ReactPlayer width={"100%"} url={post?.video} />
+          ) : (
+            <>{post?.sharedImage && <img src={post?.sharedImage} alt="" />}</>
+          )}
+        </Image>
+        <PostDetails>
+          {likesCount >= 1 && (
+            <li>
+              <button>
+                <LikeReactionIcon />
+                <span>{likesCount}</span>
+              </button>
+            </li>
+          )}
 
-                    <p className="createdAt">{createdAt}</p>
-                    {/* 
+          <li>
+            <p>{`${comments?.length} comments`}</p>
+          </li>
+        </PostDetails>
+        <PostActions>
+          <button onClick={handleLike}>
+            {liked ? (
+              <BiSolidLike size={30} color={"#0a66c2"} />
+            ) : (
+              <BiLike size={30} />
+            )}
+
+            <span style={{ color: liked && "#0a66c2" }}>Like</span>
+          </button>
+          <button
+            onClick={() => {
+              setShowComments((prev) => !prev);
+            }}
+            style={{ color: showComments && "#0a66c2" }}
+          >
+            <AiOutlineComment size={30} />
+            <span>Comments</span>
+          </button>
+          <button>
+            <ShareIcon />
+            <span>Share</span>
+          </button>
+          <button>
+            <SendIcon />
+            <span>Send</span>
+          </button>
+        </PostActions>
+        {showComments && (
+          <div style={{ paddingBottom: "1rem" }}>
+            <CommentInputWrapper>
+              <div style={{ display: "flex" }}>
+                <input
+                  placeholder="Add a comment..."
+                  onChange={(e) => {
+                    setComment(e.target.value);
+                  }}
+                  value={comment}
+                />
+              </div>
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <button onClick={addComment}>Add comment</button>
+              </div>
+            </CommentInputWrapper>
+            <div>
+              {comments.length > 0 ? (
+                comments.map(({ id, comment, createdAt, displayNameUser }) => {
+                  return (
+                    <SingleComment key={id}>
+                      <h6 className="name">{displayNameUser}</h6>
+                      <p className="comment">{comment}</p>
+
+                      <p className="createdAt">{createdAt}</p>
+                      {/* 
                   <p>•</p>
                    */}
-                  </SingleComment>
-                );
-              })
-            ) : (
-              <></>
-            )}
+                    </SingleComment>
+                  );
+                })
+              ) : (
+                <></>
+              )}
+            </div>
           </div>
-        </div>
-      )}
-    </PostWrapper>
+        )}
+      </PostWrapper>
+    ) : <>No posts</>
   );
 };
 const CommonCard = styled.div`

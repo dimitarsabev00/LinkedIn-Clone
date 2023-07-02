@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Navigate, Route, Routes, useLocation } from "react-router";
+import Connections from "../../screens/Connections";
 import Feed from "../../screens/Feed";
 import Login from "../../screens/Login";
 import MainPage from "../../screens/MainPage";
@@ -59,6 +60,14 @@ const RoutesComp = () => {
         element={
           <PrivateRoute>
             <Profile />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/connections"
+        element={
+          <PrivateRoute>
+            <Connections />
           </PrivateRoute>
         }
       />

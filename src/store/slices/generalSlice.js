@@ -425,5 +425,43 @@ export const updatePost =
       console.log(err);
     }
   };
+export const addConnection =
+  ({ userId, targetId }) =>
+  async () => {
+    try {
+      let connectionToAdd = doc(
+        collection(db, "connections"),
+        `${userId}_${targetId}`
+      );
+
+      setDoc(connectionToAdd, { userId, targetId });
+
+      toast.success("Connection Added!");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+export const getConnections =
+  ({ userId, targetId, setIsConnected }) =>
+  async () => {
+    try {
+      let connectionsQuery = query(
+        collection(db, "connections"),
+        where("targetId", "==", targetId)
+      );
+
+      onSnapshot(connectionsQuery, (snapshot) => {
+        let connections = snapshot.docs.map((doc) => doc.data());
+
+        const isConnected = connections.some(
+          (connection) => connection.userId === userId
+        );
+
+        setIsConnected(isConnected);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
 export default generalSlice.reducer;

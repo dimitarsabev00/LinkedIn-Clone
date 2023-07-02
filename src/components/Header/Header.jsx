@@ -47,14 +47,23 @@ const Header = () => {
         </Search>
         <Nav>
           <NavListWrap>
-            <NavList className="active">
+            <NavList
+              className="active"
+              onClick={() => {
+                navigate("/feed");
+              }}
+            >
               <a>
                 <img src={NavHomeIcon} alt="" />
                 <span>Home</span>
               </a>
             </NavList>
 
-            <NavList>
+            <NavList
+              onClick={() => {
+                navigate("/connections");
+              }}
+            >
               <a>
                 <img src={NavNetworkIcon} alt="" />
                 <span>My Network</span>

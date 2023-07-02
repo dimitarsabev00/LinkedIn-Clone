@@ -8,3 +8,4 @@ export { default as Post } from "./Post";
 export { default as ProfilePopup } from "./ProfilePopup";
 export { default as ProfileEdit } from "./ProfileEdit";
 export { default as FileUploadModal } from "./FileUploadModal";
+export { default as ConnectedUsers } from "./ConnectedUsers";

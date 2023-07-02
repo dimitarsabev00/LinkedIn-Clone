@@ -21,6 +21,7 @@ import {
 } from "../../store/slices/generalSlice";
 import { useState } from "react";
 import { useEffect } from "react";
+import PreviewImageModal from "../PreviewImageModal/PreviewImageModal";
 const Post = ({ post, getEditData }) => {
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
@@ -28,6 +29,7 @@ const Post = ({ post, getEditData }) => {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
 
   const currentUser = useSelector(({ generalSlice }) => generalSlice.user);
   const allUsers = useSelector(({ generalSlice }) => generalSlice.allUsers);
@@ -126,7 +128,17 @@ const Post = ({ post, getEditData }) => {
         {post?.video ? (
           <ReactPlayer width={"100%"} url={post?.video} />
         ) : (
-          <>{post?.sharedImage && <img src={post?.sharedImage} alt="" />}</>
+          <>
+            {post?.sharedImage && (
+              <img
+                src={post?.sharedImage}
+                alt=""
+                onClick={() => {
+                  setShowImageModal(true);
+                }}
+              />
+            )}
+          </>
         )}
       </Image>
       <PostDetails>
@@ -209,6 +221,11 @@ const Post = ({ post, getEditData }) => {
           </div>
         </div>
       )}
+      <PreviewImageModal
+        showImageModal={showImageModal}
+        setShowImageModal={setShowImageModal}
+        postImage={post?.sharedImage}
+      />
     </PostWrapper>
   ) : (
     <>No posts</>

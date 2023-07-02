@@ -86,16 +86,7 @@ const PostModal = ({
           setAssetArea("");
           setShowPostModal(false);
         }}
-        footer={[
-          <Button
-            onClick={isEdit ? updatePostFunc : createNewPost}
-            key="submit"
-            type="primary"
-            disabled={description.length > 0 ? false : true}
-          >
-            {isEdit ? "Update" : "Post"}
-          </Button>,
-        ]}
+        footer={null}
       >
         {!isEdit && (
           <UserInfo>
@@ -153,6 +144,15 @@ const PostModal = ({
                   <YouTubeIcon />
                 </AssetButton>
               </AttachAssets>
+              <Button
+                onClick={isEdit ? updatePostFunc : createNewPost}
+                key="submit"
+                type="primary"
+                disabled={description.length > 0 ? false : true}
+                style={{ marginRight: "-24px" }}
+              >
+                {isEdit ? "Update" : "Post"}
+              </Button>
             </ShareCreation>
           )}
         </PostModalBody>

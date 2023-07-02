@@ -45,6 +45,7 @@ const Profile = () => {
       );
     }
   }, []);
+  // console.log("locationState", location?.state);
   const posts = useSelector(({ generalSlice }) => generalSlice.posts);
 
   const getImage = (e) => {

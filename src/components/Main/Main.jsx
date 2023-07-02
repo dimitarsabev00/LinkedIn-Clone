@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { getPosts } from "../../store/slices/generalSlice";
+import { getPosts } from "../../store";
 import Post from "../Post";
 import PostModal from "../PostModal";
 import ShareBox from "../ShareBox";
@@ -18,7 +18,7 @@ const Main = () => {
   useEffect(() => {
     dispatch(getPosts());
   }, []);
-  const posts = useSelector(({ generalSlice }) => generalSlice.posts);
+  const posts = useSelector(({ postsSlice }) => postsSlice.posts);
   console.log(posts);
   const getEditData = (post) => {
     setShowPostModal(true);
@@ -33,7 +33,7 @@ const Main = () => {
         <p style={{ textAlign: "center" }}>There are no posts</p>
       ) : (
         <>
-          {posts.map((post, index) => (
+          {posts?.map((post, index) => (
             <Post
               key={index}
               post={post}

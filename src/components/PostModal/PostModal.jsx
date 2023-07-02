@@ -5,7 +5,7 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import { useState } from "react";
 import ReactPlayer from "react-player";
 import { useDispatch, useSelector } from "react-redux";
-import { createPost, updatePost } from "../../store/slices/generalSlice";
+import { createPost, updatePost } from "../../store";
 import { Button, Modal } from "antd";
 
 const PostModal = ({

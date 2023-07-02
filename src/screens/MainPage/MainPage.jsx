@@ -3,7 +3,7 @@ import LoginLogo from "../../assets/icons/login-logo.svg";
 import LoginWithGoogleLogo from "../../assets/icons/google.svg";
 import LoginIllustration from "../../assets/images/login-illustration.svg";
 import { useDispatch } from "react-redux";
-import { loginUserWithGoogle } from "../../store/slices/generalSlice";
+import { loginUserWithGoogle } from "../../store";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 const MainPage = () => {

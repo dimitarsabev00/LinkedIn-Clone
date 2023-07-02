@@ -10,18 +10,17 @@ import LikeReactionIcon from "@mui/icons-material/Recommend";
 import ReactPlayer from "react-player";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addedCommentForSinglePost,
-  deletePost,
-  getAllUsers,
-  getCommentsForSinglePost,
-  getConnections,
-  getLikesByUser,
-  likePost,
-} from "../../store/slices/generalSlice";
 import { useState } from "react";
 import { useEffect } from "react";
 import PreviewImageModal from "../PreviewImageModal/PreviewImageModal";
+import {
+  addedCommentForSinglePost,
+  getCommentsForSinglePost,
+  getLikesByUser,
+  likePost,
+  getAllUsers,
+  getConnections,
+} from "../../store";
 const Post = ({ post, getEditData }) => {
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);

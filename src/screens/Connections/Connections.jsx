@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { ConnectedUsers, Header } from "../../components";
-import { getAllUsers } from "../../store/slices/generalSlice";
+import { getAllUsers } from "../../store";
 const Connections = () => {
   const allUsers = useSelector(({ generalSlice }) => generalSlice.allUsers);
   const currentUser = useSelector(({ generalSlice }) => generalSlice.user);

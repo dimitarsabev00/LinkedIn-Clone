@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from "styled-components";
 import HeaderLogo from "../../assets/icons/header-logo.svg";
 import SearchingIcon from "../../assets/icons/search-icon.svg";
@@ -9,17 +10,57 @@ import NavNotificationsIcon from "../../assets/icons/nav-notifications.svg";
 import ArrowDownIcon from "../../assets/icons/arrow-down-icon.svg";
 import NavWorkIcon from "../../assets/icons/nav-work.svg";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import ProfilePopup from "../ProfilePopup";
+import { useEffect } from "react";
+import { getAllUsers } from "../../store";
 
 const Header = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const currentUser = useSelector(({ generalSlice }) => generalSlice.user);
   const [popupVisible, setPopupVisible] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const displayPopup = () => {
     setPopupVisible(!popupVisible);
   };
+  const openUser = (user) => {
+    navigate("/profile", {
+      state: {
+        id: user.id,
+        email: user.email,
+      },
+    });
+  };
+  useEffect(() => {
+    dispatch(getAllUsers());
+  }, []);
+  const allUsers = useSelector(({ generalSlice }) => generalSlice.allUsers);
+  const handleSearch = () => {
+    if (searchInput !== "") {
+      let searched = allUsers.filter((user) => {
+        return Object.values(user)
+          .join("")
+          .toLowerCase()
+          .includes(searchInput.toLowerCase());
+      });
+
+      setFilteredUsers(searched);
+    } else {
+      setFilteredUsers(allUsers);
+    }
+  };
+
+  useEffect(() => {
+    let debounced = setTimeout(() => {
+      handleSearch();
+    }, 10);
+
+    return () => clearTimeout(debounced);
+  }, [searchInput]);
+
   return (
     <Container>
       <Content>
@@ -39,7 +80,14 @@ const Header = () => {
         </Logo>
         <Search>
           <div>
-            <input type="text" placeholder="Search" />
+            <input
+              type="text"
+              placeholder="Search"
+              onChange={(e) => {
+                setSearchInput(e.target.value);
+              }}
+              value={searchInput}
+            />
           </div>
           <SearchIcon>
             <img src={SearchingIcon} alt="" />
@@ -112,6 +160,26 @@ const Header = () => {
                 </span>
               </a>
             </Work>
+            {searchInput.length === 0 ? (
+              <></>
+            ) : (
+              <SearchResultWrapper>
+                {filteredUsers.length === 0 ? (
+                  <div className="search-inner">No Results Found..</div>
+                ) : (
+                  filteredUsers.map((user) => (
+                    <div
+                      key={user?.id}
+                      className="search-inner"
+                      onClick={() => openUser(user)}
+                    >
+                      <img src={user?.avatar} />
+                      <p className="name">{user?.name}</p>
+                    </div>
+                  ))
+                )}
+              </SearchResultWrapper>
+            )}
           </NavListWrap>
         </Nav>
       </Content>
@@ -165,6 +233,7 @@ const Search = styled.div`
       height: 34px;
       border-color: #dce6f1;
       vertical-align: text-top;
+      outline: none;
     }
   }
 `;
@@ -275,6 +344,40 @@ const PopupPositionContainer = styled.div`
   right: 10px;
   top: 65px;
   z-index: 99;
+`;
+const SearchResultWrapper = styled.div`
+  position: absolute;
+  left: 40px;
+  top: 60px;
+  width: 270px;
+  height: auto;
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid #bbbbbb;
+
+  .search-inner {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 10px;
+    img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .name {
+      font-family: system-ui;
+      font-size: 18px;
+    }
+  }
+
+  .search-inner:hover {
+    background-color: #bbbbbb;
+  }
 `;
 
 export default Header;
